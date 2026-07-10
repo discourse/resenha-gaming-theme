@@ -4,6 +4,24 @@ A dark-first Discourse theme for gaming communities running the [Resenha](https:
 
 Based on the design at <https://resenha.falco.dev/>.
 
+## Screenshots
+
+### Forum
+
+![Card-style topic list with the workspace tabs, category picker, and inline search](screenshots/forum.png)
+
+### Chat
+
+![Full-page chat with the context-aware sidebar](screenshots/chat.png)
+
+### Voice room
+
+![A live voice room with participants, a screen share, and the room chat panel](screenshots/voice-room.png)
+
+### Mobile
+
+<img src="screenshots/mobile.png" width="390" alt="Mobile home with the bottom tab bar and floating new-topic button">
+
 ## Features
 
 - **Workspace tabs** — Forum, Chat, and Live room tabs are the site header; on screens narrower than 48rem they become a fixed bottom navigation bar with safe-area support and an unread badge on the Chat tab.
