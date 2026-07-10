@@ -1,0 +1,182 @@
+@use "lib/viewport";
+
+// Dark control-room sidebar. The rail is tab-contextual: Forum shows
+// categories/tags, Chat shows channels/DMs, Live room shows the voice rooms.
+// Workspace navigation lives exclusively in the header tabs. Surfaces and the
+// active/hover washes ride the resenha tokens so both color schemes hold up.
+
+// -- Shell --------------------------------------------------------------------
+// Background already flows through --d-sidebar-background (tokens.scss); we add
+// the hairline that separates the rail from the content column.
+.sidebar-wrapper {
+  border-inline-end: 1px solid var(--resenha-line);
+}
+
+// -- Voice rooms section (plugin markup, CSS-only) ----------------------------
+// Targets both the main-panel section and its chat-panel mirror.
+.sidebar-section[data-section-name^="resenha-rooms"] {
+  // Mono uppercase eyebrow header.
+  .sidebar-section-header-text {
+    font-family: var(--resenha-mono-font);
+    font-size: var(--font-down-2);
+    font-weight: var(--token-font-weight-bold);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  // "+" create action rendered as a small square control.
+  .sidebar-section-header-button {
+    display: grid;
+    place-items: center;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: var(--resenha-radius-sm);
+    color: var(--resenha-muted);
+
+    &:hover {
+      color: var(--resenha-ink);
+      background: var(--resenha-hairline-fill);
+    }
+  }
+}
+
+// Room rows: an icon tile prefix + room name, a lime wash while connected, and
+// the plugin's own suffix markers (connecting spinner / video icon) restyled.
+.resenha-sidebar-link {
+  .sidebar-section-link-content-text {
+    // Grow so the trailing suffix marker is pushed to the far edge.
+    flex: 1 1 auto;
+    color: var(--resenha-ink-soft);
+    font-weight: var(--token-font-weight-medium);
+  }
+
+  // Icon sits inside a rounded translucent tile.
+  .sidebar-section-link-prefix.icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: var(--resenha-radius-sm);
+    color: var(--resenha-muted);
+    background: var(--resenha-hairline-fill);
+  }
+
+  // Someone in the room has a camera or screen running.
+  .sidebar-section-link-suffix .d-icon-video {
+    // stylelint-disable-next-line discourse/require-design-tokens
+    color: var(--resenha-coral);
+  }
+
+  &.sidebar-section-link--active {
+    background: var(--resenha-lime-soft);
+
+    .sidebar-section-link-content-text {
+      color: var(--resenha-ink);
+    }
+
+    .sidebar-section-link-prefix.icon {
+      // stylelint-disable-next-line discourse/require-design-tokens
+      color: var(--resenha-lime);
+    }
+  }
+}
+
+// Participant rows are indented (plugin) and rendered a notch smaller/quieter.
+.resenha-sidebar-participant {
+  .sidebar-section-link-content-text {
+    color: var(--resenha-muted);
+    font-size: var(--font-down-1);
+  }
+
+  // Speaking: keep the avatar visible and move the animated bars to the right
+  // edge (the plugin overlays them on the avatar by default). The bars are a
+  // pseudo-element on the prefix; re-anchoring the prefix to static lets them
+  // position against the row instead. The animation keyframes are the plugin's
+  // (they only drive background-size) so they keep running.
+  &--speaking {
+    .sidebar-section-link-content-text {
+      color: var(--resenha-ink);
+    }
+
+    .sidebar-section-link-prefix {
+      position: static;
+
+      img {
+        opacity: 1;
+      }
+
+      &::before {
+        content: none;
+      }
+
+      &::after {
+        inset: 50% var(--space-2) auto auto;
+        left: auto;
+        width: 0.8125rem;
+        height: 0.875rem;
+        transform: translateY(-50%);
+        background:
+          linear-gradient(var(--resenha-success), var(--resenha-success)) 0 50%,
+          linear-gradient(var(--resenha-success), var(--resenha-success)) 5px
+            50%,
+          linear-gradient(var(--resenha-success), var(--resenha-success)) 10px
+            50%;
+        background-repeat: no-repeat;
+        background-size:
+          3px 40%,
+          3px 70%,
+          3px 50%;
+      }
+    }
+  }
+}
+
+// -- Tab-contextual rail -------------------------------------------------------
+// Each workspace tab keeps only its own sections: Forum = categories/tags,
+// Chat = channels/DMs, Live room = voice rooms. The community section never
+// shows (the header tabs are the workspace navigation).
+.sidebar-section[data-section-name="community"] {
+  display: none;
+}
+
+// Chat channel/DM/thread sections only belong to the Chat tab.
+body:not(.has-full-page-chat) {
+  .sidebar-section[data-section-name="chat-search"],
+  .sidebar-section[data-section-name="user-threads"],
+  .sidebar-section[data-section-name="chat-starred-channels"],
+  .sidebar-section[data-section-name="chat-channels"],
+  .sidebar-section[data-section-name="chat-dms"] {
+    display: none;
+  }
+}
+
+// Voice rooms only belong to the Live room tab (the room page is the marker).
+body:not(:has(.resenha-room-page)) {
+  .sidebar-section[data-section-name^="resenha-rooms"] {
+    display: none;
+  }
+}
+
+// Forum sections leave when Chat or the Live room take over the rail.
+.has-full-page-chat,
+body:has(.resenha-room-page) {
+  .sidebar-section[data-section-name="categories"],
+  .sidebar-section[data-section-name="tags"] {
+    display: none;
+  }
+}
+
+// -- Slide-in panels (mobile / narrow desktop) --------------------------------
+// The hamburger contextual sidebar and the user menu slide in as overlays.
+// Drop the boxed border for a single hairline against the content, ride the
+// theme surfaces, and reserve room for the device safe-area at the foot.
+.hamburger-panel .menu-panel {
+  padding: 0.5em 0.5em max(env(safe-area-inset-bottom), 0.5em);
+  border: 0;
+  border-inline-end: 1px solid var(--resenha-line);
+  background: var(--resenha-sidebar);
+}
+
+.user-menu.menu-panel {
+  border: 0;
+  border-inline-start: 1px solid var(--resenha-line);
+  background: var(--resenha-shell);
+}

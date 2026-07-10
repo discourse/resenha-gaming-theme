@@ -1,0 +1,330 @@
+@use "lib/viewport";
+
+// Voice room styles target the Resenha plugin's stable classes. Colors come
+// only from the theme tokens so both schemes stay usable.
+.resenha-room-page {
+  gap: var(--space-3);
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  // Room name in the condensed display face.
+  &__title {
+    font-family: var(--resenha-display-font);
+    font-stretch: condensed;
+    font-size: var(--font-up-3);
+    font-weight: var(--token-font-weight-bold);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    color: var(--resenha-ink);
+  }
+
+  &__description {
+    color: var(--resenha-muted);
+    font-size: var(--font-down-1);
+  }
+
+  &__stage {
+    row-gap: var(--space-3);
+  }
+
+  // Screen share layout: a shared screen above a horizontal participant rail.
+  &.--presentation &__presentation {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+  }
+
+  &.--presentation &__presentation-rail {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(10rem, 14rem);
+    grid-auto-rows: minmax(7rem, 9rem);
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding-block-end: 1px;
+  }
+
+  // The shared-screen frame: cyan hairline, inset cyan glow, screen surface.
+  &__presentation-main {
+    border-color: color-mix(in srgb, var(--resenha-cyan) 25%, transparent);
+    border-radius: 0.6rem;
+    background: var(--resenha-screen);
+    box-shadow: inset 0 0 2.5rem
+      color-mix(in srgb, var(--resenha-cyan) 14%, transparent);
+  }
+
+  &__empty {
+    color: var(--resenha-muted);
+    font-size: var(--font-down-1);
+  }
+
+  // Control bar: a raised rail with square icon buttons, Leave pushed to the
+  // far end. Replaces the plugin's default centered/pill look.
+  &__controls {
+    justify-content: flex-start;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2.8rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--resenha-line);
+    border-radius: 0.55rem;
+    background: var(--resenha-raised);
+
+    // Reset the plugin's blanket "off/active → tertiary"; the theme colors
+    // these states explicitly below.
+    .--off,
+    .--active {
+      color: inherit;
+    }
+
+    // Recolor only (border-color, not the border shorthand) so the plugin's
+    // combo-button seam — the mic/camera main dropping its trailing border to
+    // butt against the caret — survives.
+    .btn-default {
+      min-height: 2rem;
+      border-color: var(--resenha-line);
+      background: var(--resenha-hairline-fill);
+      color: var(--resenha-ink-soft);
+
+      .d-icon {
+        color: var(--resenha-ink-soft);
+      }
+
+      &:hover {
+        border-color: var(--resenha-line-strong);
+        color: var(--resenha-ink);
+
+        .d-icon {
+          color: var(--resenha-ink);
+        }
+      }
+    }
+
+    .btn-default.btn-icon {
+      min-width: 2rem;
+    }
+
+    // Active (camera/screen live, mic on) → lime; off (muted, deafened) → coral.
+    .--active {
+      border-color: var(--resenha-lime-edge);
+      background: var(--resenha-lime-soft);
+      color: var(--resenha-lime);
+
+      .d-icon {
+        color: var(--resenha-lime);
+      }
+    }
+
+    .--off {
+      border-color: color-mix(in srgb, var(--resenha-coral) 40%, transparent);
+      background: color-mix(in srgb, var(--resenha-coral) 12%, transparent);
+      color: var(--resenha-coral);
+
+      .d-icon {
+        color: var(--resenha-coral);
+      }
+    }
+  }
+
+  // Leave: coral outline, pushed to the trailing edge.
+  &__leave.btn-danger {
+    margin-inline-start: auto;
+    border: 1px solid color-mix(in srgb, var(--resenha-coral) 55%, transparent);
+    border-radius: 0.42rem;
+    background: transparent;
+    color: var(--resenha-coral);
+    font-weight: var(--token-font-weight-semibold);
+
+    .d-icon {
+      color: var(--resenha-coral);
+    }
+
+    &:hover {
+      background: color-mix(in srgb, var(--resenha-coral) 14%, transparent);
+      color: var(--resenha-coral);
+    }
+  }
+
+  // Join (pre-call) stays a lime primary, just squared to match the bar.
+  &__join.btn-primary {
+    border-radius: 0.42rem;
+  }
+}
+
+// Person / video tiles.
+.resenha-video-tile {
+  border-radius: 0.6rem;
+  background: var(--resenha-tile);
+
+  // Avatar tiles get a soft top-center highlight and a ringed avatar.
+  &.--avatar {
+    background:
+      radial-gradient(
+        120% 90% at 50% 0%,
+        var(--resenha-tile-highlight),
+        transparent 62%
+      ),
+      var(--resenha-tile);
+  }
+
+  &.--avatar &__avatar img {
+    box-shadow: 0 0 0 2px var(--resenha-tile-ring);
+  }
+
+  // Speaking ring in success green.
+  &.--speaking {
+    outline-color: var(--resenha-success);
+    box-shadow: 0 0 1.4rem
+      color-mix(in srgb, var(--resenha-success) 28%, transparent);
+  }
+
+  // Name chip bottom-left, mic/status chips bottom-right.
+  &__info {
+    justify-content: space-between;
+    padding: 0.4rem 0.45rem;
+  }
+
+  &__name {
+    padding: 0.12rem 0.4rem;
+    border-radius: 0.25rem;
+    background: rgb(0 0 0 / 55%);
+    color: #fff;
+    font-size: var(--font-down-2);
+    text-shadow: none;
+  }
+
+  &.--avatar &__info .d-icon {
+    padding: 0.18rem;
+    border-radius: 0.25rem;
+    background: rgb(0 0 0 / 55%);
+    box-sizing: content-box;
+  }
+
+  // Shared-screen tile: cyan accents and a compact footer bar.
+  &.--screen {
+    border: 1px solid color-mix(in srgb, var(--resenha-cyan) 25%, transparent);
+    background: var(--resenha-screen);
+
+    .resenha-video-tile__info {
+      justify-content: flex-start;
+      gap: 0.4rem;
+      background: rgb(0 0 0 / 20%);
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-down-2);
+      letter-spacing: 0.04em;
+    }
+
+    .resenha-video-tile__name {
+      padding: 0;
+      background: transparent;
+      color: var(--resenha-ink-soft);
+    }
+
+    .resenha-video-tile__info .d-icon {
+      color: var(--resenha-cyan);
+    }
+  }
+}
+
+// Room chat panel.
+.resenha-room-page__sidebar .resenha-chat {
+  // Fill the themed column instead of the plugin's fixed 22rem floor.
+  min-width: 0;
+  border: 1px solid var(--resenha-line);
+  border-radius: 0.55rem;
+  background: var(--resenha-surface);
+}
+
+.resenha-chat {
+  &__header {
+    border-bottom: 1px solid var(--resenha-line);
+  }
+
+  &__title {
+    font-size: var(--font-0);
+    font-weight: var(--token-font-weight-bold);
+    color: var(--resenha-ink);
+  }
+
+  &__empty {
+    color: var(--resenha-muted);
+  }
+
+  &__empty-title {
+    color: var(--resenha-ink-soft);
+    font-weight: var(--token-font-weight-semibold);
+  }
+
+  // Composer as an inset pill pinned to the bottom.
+  &__composer-inner {
+    border: 1px solid var(--resenha-line);
+    border-radius: 0.35rem;
+    background: var(--resenha-well);
+  }
+
+  &__input {
+    background: transparent;
+    border: none;
+    color: var(--resenha-ink);
+
+    &::placeholder {
+      color: var(--resenha-faint);
+    }
+  }
+}
+
+// Below lg the plugin turns the chat panel into a full-height drawer; keep that
+// behavior and just make sure the stage breathes when the chat is closed.
+@include viewport.until(lg) {
+  .resenha-room-page__stage {
+    row-gap: var(--space-2);
+  }
+
+  .resenha-room-page.--presentation .resenha-room-page__presentation-rail {
+    grid-auto-columns: minmax(8rem, 11rem);
+  }
+}
+
+// -- Mobile -------------------------------------------------------------------
+// The room keeps the bottom tab bar, so its height and the docked call widget
+// both reserve room for it. Controls grow to comfortable touch targets.
+@include viewport.until(md) {
+  .resenha-room-page {
+    height: calc(
+      100dvh - var(--header-offset, 4em) - var(--resenha-tabbar-height, 0px) -
+        4em
+    );
+
+    &__title {
+      font-size: var(--font-up-2);
+    }
+
+    &__controls {
+      gap: 0.5rem;
+
+      .btn-default {
+        min-height: 2.5rem;
+      }
+
+      .btn-default.btn-icon {
+        min-width: 2.5rem;
+      }
+    }
+
+    // Pre-call join button fills the bar and centers, as a primary touch CTA.
+    &__join.btn-primary {
+      flex: 1 1 auto;
+      justify-content: center;
+      min-height: 2.75rem;
+    }
+  }
+
+  // The call widget is a full-width bottom dock on touch; float it above the
+  // tab bar so the two never overlap. Scoped to <md so wider touch devices
+  // (no bottom bar) keep the plugin's own safe-area inset.
+  html.discourse-touch .resenha-call-widget {
+    inset-block-end: calc(var(--resenha-tabbar-height, 0px) + 0.75rem);
+  }
+}

@@ -1,0 +1,98 @@
+@use "lib/viewport";
+
+// Search menu dropdown panel (dark treatment). ------------------------------
+.search-menu-panel,
+.search-menu .menu-panel {
+  border: 1px solid var(--resenha-line-strong);
+  border-radius: var(--resenha-radius);
+  background: var(--resenha-panel);
+  box-shadow: var(--resenha-shadow);
+}
+
+.search-menu-container {
+  .results {
+    background: var(--resenha-panel);
+  }
+
+  .search-link {
+    border-radius: var(--resenha-radius-sm);
+
+    &:hover,
+    &:focus {
+      background: var(--resenha-hairline-fill);
+    }
+
+    .search-item-slug,
+    .topic-title {
+      color: var(--resenha-ink);
+    }
+  }
+
+  .heading h4,
+  .search-random-quick-tip,
+  .no-results {
+    color: var(--resenha-muted);
+  }
+}
+
+// Give the discovery header's search dropdown room to breathe.
+.resenha-discovery-header__search .search-menu-panel {
+  min-width: min(22rem, calc(100vw - var(--space-4) * 2));
+}
+
+// Full /search page. --------------------------------------------------------
+.search-page {
+  #main-outlet {
+    padding-block: var(--space-5);
+  }
+
+  .search-container {
+    overflow: clip;
+    max-width: 74rem;
+    margin-inline: auto;
+    border: 1px solid var(--resenha-line);
+    border-radius: var(--resenha-radius-lg);
+    background:
+      linear-gradient(135deg, var(--resenha-lime-soft), transparent 20rem),
+      var(--resenha-panel);
+    box-shadow: var(--resenha-shadow);
+  }
+
+  .search-header {
+    padding: clamp(var(--space-4), 4vw, var(--space-7));
+  }
+
+  .search-page-heading {
+    color: var(--resenha-ink);
+    font-family: var(--resenha-display-font);
+    font-stretch: condensed;
+    font-weight: var(--token-font-weight-bold);
+    letter-spacing: 0.02em;
+  }
+
+  .search-bar {
+    padding: var(--space-2);
+    border: 1px solid var(--resenha-line);
+    border-radius: var(--resenha-radius);
+    background: var(--resenha-well);
+  }
+
+  .search-info {
+    border-block-start-color: var(--resenha-line);
+    background: transparent;
+  }
+}
+
+@include viewport.until(lg) {
+  .search-page {
+    #main-outlet {
+      padding-block: var(--space-3);
+    }
+
+    .search-container {
+      border-inline: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+  }
+}

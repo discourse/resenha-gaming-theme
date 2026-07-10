@@ -1,0 +1,380 @@
+@use "lib/viewport";
+
+// =============================================================================
+// Chat — always full page.
+//
+// resenha-chat-mode.gjs pins chat to full page on every boot, so the drawer
+// never opens. This partial styles the full-page view and hides drawer
+// controls in the full-page navbar.
+// =============================================================================
+
+// -- Neutralise drawer affordances --------------------------------------------
+// Hide chat drawer controls. Scoped to full-page chat so embedded chat
+// surfaces from other plugins keep their own close buttons.
+.has-full-page-chat .full-page-chat {
+  .c-navbar__open-drawer-button,
+  .c-navbar__full-page-button,
+  .c-navbar__toggle-drawer-button,
+  .c-navbar__close-drawer-button {
+    display: none;
+  }
+}
+
+// -- Full-page shell ----------------------------------------------------------
+// Flat panel, edge-to-edge within the content area (no card / radius look).
+.has-full-page-chat {
+  // Both the channel and thread panes use this value for their header and
+  // remaining-content calculations. Keeping it fixed prevents the two panes
+  // from drifting vertically when a thread is open beside a channel.
+  --chat-header-offset: 3.25rem;
+
+  #main-outlet {
+    background: var(--resenha-panel);
+  }
+}
+
+.full-page-chat {
+  // Subtle theme wash on message-row hover; keeps core's bookmarked / deleted
+  // / highlighted hover variants (they use their own variables) intact.
+  --d-hover: var(--resenha-hairline-fill);
+
+  // -- Channel navbar ---------------------------------------------------------
+  // Flat on the panel with a single hairline beneath the title.
+  .c-navbar-container {
+    background: transparent;
+    border-bottom: 1px solid var(--resenha-line);
+    padding-block: 0;
+    padding-inline: 1rem;
+  }
+
+  // "# channel-name". Core renders a chat-bubble icon for category channels;
+  // replace it with a faint "#". The :has() guard leaves emoji
+  // channels (and DM avatars) untouched.
+  .c-navbar__channel-title .chat-channel-title.is-category {
+    .chat-channel-icon.--icon {
+      font-size: var(--font-up-2);
+      color: var(--resenha-faint);
+
+      &:has(.d-icon-d-chat) {
+        .d-icon-d-chat {
+          display: none;
+        }
+
+        &::before {
+          content: "#";
+          color: var(--resenha-faint);
+          font-weight: var(--token-font-weight-bold);
+          line-height: 1;
+        }
+      }
+    }
+  }
+
+  // Scoped to the navbar so ChannelTitle instances elsewhere (thread original
+  // messages, "See in <channel>" chips) keep their body size.
+  .c-navbar__channel-title .chat-channel-name__label {
+    color: var(--resenha-ink);
+    font-family: var(--resenha-body-font);
+    font-size: var(--font-up-2);
+    font-weight: var(--token-font-weight-bold);
+  }
+
+  // Thread / side-panel navbar title gets the same weight as the channel title
+  // so the two headers read as one aligned bar.
+  .c-navbar__title {
+    color: var(--resenha-ink);
+    font-size: var(--font-up-2);
+    font-weight: var(--token-font-weight-bold);
+  }
+
+  // -- Messages -----------------------------------------------------------------
+  // Avatar column wide enough for a 2.2rem avatar plus a comfortable gap;
+  // consecutive (`.-user-info-hidden`) rows indent under this same column.
+  --message-left-width: 3rem;
+
+  .chat-message .chat-user-avatar .chat-user-avatar__container .avatar {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+
+  // Comfortable gap between message groups (first row of each author block).
+  .chat-message-container:not(.-user-info-hidden) {
+    margin-top: 1rem;
+  }
+
+  .chat-message-content {
+    gap: 0.15rem;
+  }
+
+  .chat-message-info__username__name {
+    color: var(--resenha-ink-soft);
+    font-size: var(--font-down-1);
+    font-weight: var(--token-font-weight-semibold);
+  }
+
+  .chat-message-info__date,
+  .chat-message-left-gutter__date,
+  .chat-time {
+    color: var(--resenha-muted);
+    font-family: var(--resenha-mono-font);
+    font-size: var(--font-down-2);
+  }
+
+  .chat-message-text {
+    color: var(--resenha-ink-soft);
+  }
+
+  // Date separators ("Today"): centred mono label with hairlines both sides.
+  .chat-message-separator-date {
+    .chat-message-separator__text {
+      background-color: var(--resenha-panel);
+      border-color: transparent;
+      color: var(--resenha-muted);
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-down-2);
+    }
+
+    & + .chat-message-separator__line-container .chat-message-separator__line {
+      border-top-color: var(--resenha-line);
+    }
+
+    // The "last visit" marker reads as an alarm in core red; keep it a quiet
+    // coral hint that matches the theme's live accent.
+    &.with-last-visit
+      + .chat-message-separator__line-container
+      .chat-message-separator__line {
+      border-top-color: var(--resenha-coral);
+      opacity: 0.45;
+    }
+
+    .chat-message-separator__last-visit {
+      color: var(--resenha-coral);
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-down-2);
+    }
+  }
+
+  // -- Composer (one pill) ------------------------------------------------------
+  // The outer container keeps the composer controls in one rounded surface.
+  .chat-composer__wrapper {
+    padding: 1rem 1rem calc(1rem + env(safe-area-inset-bottom));
+
+    .keyboard-visible & {
+      padding-bottom: 0;
+    }
+  }
+
+  .chat-composer__outer-container {
+    box-sizing: border-box;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: 2.9rem;
+    padding-inline: var(--space-1);
+    background: var(--resenha-raised);
+    border: 1px solid var(--resenha-line);
+    border-radius: 0.55rem;
+  }
+
+  // Quiet focus: a lime-tinted hairline instead of core's full ring/shadow.
+  .chat-composer.is-focused .chat-composer__outer-container {
+    border-color: var(--resenha-lime-edge);
+  }
+
+  .chat-composer__inner-container {
+    min-height: unset;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+
+    .chat-composer.is-focused & {
+      box-shadow: none;
+    }
+  }
+
+  // Core mobile paints the input slot with its own lighter block; the pill is
+  // the only surface.
+  .chat-composer__input-container {
+    background: transparent;
+  }
+
+  .chat-composer__input {
+    color: var(--resenha-ink-soft);
+
+    &::placeholder {
+      color: var(--resenha-muted);
+    }
+  }
+
+  // -- In-chat channels list (only rendered when the main sidebar is off) -----
+  // Keep the channel list visible when the main sidebar is unavailable.
+  .channels-list {
+    background: var(--resenha-sidebar);
+    border-right: 1px solid var(--resenha-line);
+
+    .chat-channel-row {
+      border-radius: var(--resenha-radius-sm);
+
+      &:hover {
+        background: var(--resenha-hairline-fill);
+
+        .chat-channel-title {
+          .chat-name,
+          .category-chat-name,
+          .dm-usernames {
+            color: var(--resenha-ink);
+          }
+        }
+      }
+
+      &.active {
+        background: var(--resenha-lime-soft);
+      }
+    }
+  }
+}
+
+// Composer buttons (uploads "+", emoji, send) are clean flat icon buttons in
+// every chat surface (full-page channel/thread and the voice-room drawer): no
+// border, no filled backing, a muted icon that brightens to ink on hover. The
+// "+" trigger otherwise inherits the theme's default button border and paints a
+// filled circle behind its icon, so it reads as a bordered box.
+.chat-composer-dropdown__trigger-btn.btn-flat {
+  border: 0;
+  background: transparent;
+}
+
+.chat-composer-button,
+.chat-composer-dropdown__trigger-btn {
+  .d-icon {
+    color: var(--resenha-muted);
+    background: transparent;
+  }
+
+  &:hover .d-icon,
+  &:focus .d-icon {
+    color: var(--resenha-ink);
+  }
+}
+
+// Floating hover-action bar — rendered in a fixed container, so it is styled
+// unscoped. Dark raised surface with a hairline, matching controls elsewhere.
+.chat-message-actions {
+  background: var(--resenha-raised);
+  border: 1px solid var(--resenha-line);
+  border-radius: var(--resenha-radius-sm);
+  box-shadow: var(--resenha-shadow);
+
+  .btn .d-icon,
+  .chat-message-reaction .d-icon {
+    color: var(--resenha-muted);
+  }
+
+  .btn:hover .d-icon {
+    color: var(--resenha-ink);
+  }
+}
+
+// -- Shared thread + message states -------------------------------------------
+// Unscoped: these render in full-page chat, the thread side panel, AND the
+// voice-room chat panel, and should look identical everywhere.
+
+// Core renders the thread name as a 24px h2 inside the thread body; tone it
+// down to a quiet mono label so it reads as metadata, not a page heading.
+.chat-thread__heading {
+  padding-block: var(--space-2);
+
+  .chat-thread__heading-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    color: var(--resenha-faint);
+  }
+}
+
+h2.chat-thread__heading-title {
+  margin: 0;
+  color: var(--resenha-muted);
+  font-family: var(--resenha-mono-font);
+  font-size: var(--font-down-1);
+  font-weight: var(--token-font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+// Opening a thread highlights its origin message; core paints it with the full
+// tertiary (lime) — keep it a soft wash instead. Bookmarked messages get the
+// same quiet treatment (core's --highlight-bg reads as a loud olive band on
+// this palette).
+.chat-message-container.-highlighted,
+.chat-message.-highlighted,
+.chat-message-container.-bookmarked {
+  background-color: var(--resenha-lime-soft);
+}
+
+// Composer focus stays a lime-tinted hairline in every chat surface (channel,
+// thread panel, voice-room panel).
+.chat-composer.is-focused .chat-composer__inner-container {
+  border-color: var(--resenha-lime-edge);
+  box-shadow: none;
+}
+
+// The red "last visit" separator reads as an alarm; keep it a quiet coral hint.
+.chat-message-separator-new-messages {
+  .chat-message-separator__text {
+    // stylelint-disable-next-line discourse/require-design-tokens
+    color: var(--resenha-coral);
+    background-color: var(--resenha-panel);
+    font-family: var(--resenha-mono-font);
+    font-size: var(--font-down-2);
+  }
+
+  .chat-message-separator__line {
+    // stylelint-disable-next-line discourse/require-design-tokens
+    border-top-color: rgb(from var(--resenha-coral) r g b / 40%);
+  }
+}
+
+@include viewport.until(lg) {
+  .full-page-chat {
+    .c-navbar-container {
+      padding-inline: 0.75rem;
+    }
+
+    .chat-composer__outer-container {
+      padding-inline: 0.75rem;
+    }
+  }
+}
+
+// -- Mobile -------------------------------------------------------------------
+// On chat index routes the plugin renders its own bottom footer (.c-footer),
+// which stacks above our workspace tab bar. Inside a conversation the tab bar
+// hides (--resenha-tabbar-height collapses to 0), so this height math is
+// self-adjusting. The theme loads after the plugin, so the equal-specificity
+// grid rule from mobile/chat-footer.scss is superseded here.
+@include viewport.until(md) {
+  html.has-full-page-chat .full-page-chat #main-chat-outlet.chat-view {
+    height: calc(
+      100dvh - var(--main-outlet-offset) - var(--composer-height, 0px) - var(
+          --resenha-tabbar-height,
+          0px
+        )
+    );
+  }
+
+  // Match the chat footer to the workspace bar (the active item already comes
+  // out lime via core's --d-nav-color--active).
+  .c-footer {
+    border-top: 1px solid var(--resenha-line);
+    background: var(--resenha-bar);
+
+    &__item {
+      padding-block: var(--space-2);
+      color: var(--resenha-muted);
+
+      .d-button-label {
+        color: var(--resenha-muted);
+        font-size: var(--font-down-2);
+      }
+    }
+  }
+}

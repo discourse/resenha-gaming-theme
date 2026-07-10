@@ -1,0 +1,68 @@
+// Theme color tokens. They resolve against the active color scheme via
+// light-dark(), so both the Night and Day palettes stay usable.
+html {
+  // Layered navy surfaces (Night) / cream surfaces (Day), darkest to lightest.
+  --resenha-page: light-dark(#{$secondary}, #{$secondary});
+  --resenha-shell: light-dark(#fbfaf5, #0c111a);
+  --resenha-panel: light-dark(#f7f6ef, #0d131c);
+  --resenha-sidebar: light-dark(#f1f0e7, #0f151f);
+  --resenha-bar: light-dark(#efeee5, #111722);
+  --resenha-surface: light-dark(#f0efe6, #121925);
+  --resenha-card: light-dark(#faf9f2, #131b27);
+  --resenha-raised: light-dark(#eceadf, #151d29);
+  --resenha-tile: light-dark(#e7e5d9, #1a2030);
+  --resenha-screen: light-dark(#eef1ea, #101a25);
+  --resenha-map: light-dark(#e9ede6, #101722);
+
+  // Ink ramp. The muted/faint steps carry small text, so both schemes keep
+  // them at readable contrast against the raised surfaces.
+  --resenha-ink: #{$primary};
+  --resenha-ink-soft: light-dark(#3c4552, #c6cbd3);
+  --resenha-muted: light-dark(#565e6b, #8f98a7);
+  --resenha-faint: light-dark(#646d7b, #7e8898);
+
+  // Hairlines.
+  --resenha-line: light-dark(rgb(16 24 33 / 12%), rgb(255 255 255 / 11%));
+  --resenha-line-strong: light-dark(
+    rgb(16 24 33 / 22%),
+    rgb(255 255 255 / 19%)
+  );
+
+  // Brand accents. Lime rides the palette tertiary so both schemes work;
+  // the rest are fixed accents shared by Night and Day.
+  --resenha-lime: #{$tertiary};
+  --resenha-lime-ink: light-dark(#f6f7f2, #11170b);
+  --resenha-violet: light-dark(#6a50e0, #9278ff);
+  --resenha-cyan: light-dark(#1e93bd, #55d7ff);
+  --resenha-coral: light-dark(#d6544a, #ff796f);
+  --resenha-warm: light-dark(#c78f1e, #ffc657);
+  --resenha-success: light-dark(#2e9a5e, #73e8a4);
+  --resenha-danger: light-dark(#d64545, #ff6868);
+
+  // Soft washes used by cards, pills, and live states.
+  --resenha-lime-soft: light-dark(
+    rgb(from #{$tertiary} r g b / 14%),
+    rgb(200 255 90 / 8%)
+  );
+  --resenha-lime-edge: light-dark(
+    rgb(from #{$tertiary} r g b / 40%),
+    rgb(200 255 90 / 28%)
+  );
+  --resenha-well: light-dark(rgb(16 24 33 / 5%), rgb(0 0 0 / 15%));
+  --resenha-hairline-fill: light-dark(
+    rgb(16 24 33 / 4%),
+    rgb(255 255 255 / 5%)
+  );
+  --resenha-shadow: 0 2.2rem 6rem
+    light-dark(rgb(31 35 24 / 14%), rgb(0 0 0 / 38%));
+
+  // Participant-tile chrome that sits on theme surfaces follows the scheme.
+  // Overlays painted on top of live video stay literal dark-scrim + light ink
+  // in the tile styles — that reads correctly over arbitrary footage in both
+  // schemes.
+  --resenha-tile-highlight: light-dark(
+    rgb(16 24 33 / 5%),
+    rgb(255 255 255 / 6%)
+  );
+  --resenha-tile-ring: light-dark(rgb(16 24 33 / 18%), rgb(255 255 255 / 16%));
+}

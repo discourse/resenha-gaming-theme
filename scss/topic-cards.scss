@@ -1,0 +1,486 @@
+@use "lib/viewport";
+
+// Place the discovery header above the navigation on discovery routes.
+#main-outlet:has(.resenha-discovery-header) {
+  display: flex;
+  flex-direction: column;
+}
+
+#main-outlet > .resenha-discovery-header,
+#main-outlet > *:has(.resenha-discovery-header) {
+  order: -1;
+}
+
+// Discovery header: mono eyebrow + display title on the left, compact search
+// box on the right.
+.resenha-discovery-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-3) var(--space-4);
+  margin-block: var(--space-2) var(--space-5);
+
+  &__intro {
+    display: grid;
+    gap: var(--space-1);
+    min-width: 0;
+  }
+
+  // Style the category picker as a compact mono uppercase label.
+  &__category-drop {
+    justify-self: start;
+
+    .select-kit-header {
+      min-height: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      color: var(--resenha-faint);
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-down-2);
+      font-weight: var(--token-font-weight-bold);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+
+      .selected-name,
+      .category-name,
+      .badge-category__name {
+        color: inherit;
+        font: inherit;
+        letter-spacing: inherit;
+      }
+
+      .badge-category__wrapper {
+        padding: 0;
+        background: transparent;
+      }
+
+      .d-icon {
+        color: inherit;
+        font-size: var(--font-down-2);
+      }
+    }
+
+    html.discourse-no-touch &:hover .select-kit-header {
+      color: var(--resenha-ink-soft);
+    }
+  }
+
+  &__title {
+    margin: 0;
+    color: var(--resenha-ink);
+    font-family: var(--resenha-display-font);
+    font-size: clamp(var(--font-up-3), 4vw, var(--font-up-5));
+    font-stretch: condensed;
+    font-weight: var(--token-font-weight-bold);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+
+  &__search {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    box-sizing: border-box;
+    width: min(20rem, 100%);
+    padding-inline: var(--space-3);
+    border: 1px solid var(--resenha-line);
+    border-radius: var(--resenha-radius);
+    background: var(--resenha-well);
+    transition: border-color 0.15s ease;
+
+    &:focus-within {
+      border-color: var(--resenha-lime-edge);
+    }
+
+    .search-menu-container {
+      flex: 1 1 auto;
+      min-width: 0;
+    }
+
+    .search-input-wrapper,
+    .search-input {
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .search-term__input {
+      min-height: 2.6rem;
+      padding: 0;
+      border: 0;
+      color: var(--resenha-ink);
+      background: transparent;
+      font-family: var(--resenha-body-font);
+      font-size: var(--font-0);
+
+      &::placeholder {
+        color: var(--resenha-faint);
+      }
+    }
+
+    // Keep the box minimal: the advanced-search shortcut is available on the
+    // full /search page.
+    .show-advanced-search {
+      display: none;
+    }
+
+    .clear-search {
+      color: var(--resenha-faint);
+
+      &:hover {
+        color: var(--resenha-ink);
+      }
+    }
+  }
+
+  &__search-icon {
+    flex: 0 0 auto;
+    color: var(--resenha-faint);
+  }
+
+  &__search-hint {
+    flex: 0 0 auto;
+    padding: 0.05rem 0.4rem;
+    border: 1px solid var(--resenha-line-strong);
+    border-radius: var(--resenha-radius-sm);
+    color: var(--resenha-faint);
+    font-family: var(--resenha-mono-font);
+    font-size: var(--font-down-2);
+    line-height: 1.4;
+  }
+
+  &__search:focus-within &__search-hint {
+    display: none;
+  }
+}
+
+// Hide the list filter nav; the category picker and search provide the
+// discovery controls. Core styles the list as #navigation-bar, so the id is
+// needed to win.
+.list-controls {
+  background: transparent;
+}
+
+.navigation-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: var(--space-3);
+
+  #navigation-bar,
+  .nav-pills {
+    display: none;
+  }
+}
+
+// Card list.
+.topic-list.--resenha-cards {
+  border: 0;
+  table-layout: fixed;
+
+  // The card layout owns its chrome; drop the table header row.
+  .topic-list-header,
+  .topic-list-item-separator {
+    display: none;
+  }
+
+  .topic-list-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    border: 0;
+  }
+
+  // Each row becomes the card shell.
+  .topic-list-item {
+    display: block;
+    padding: 0;
+    border: 1px solid var(--resenha-line);
+    border-radius: var(--resenha-radius);
+    background: var(--resenha-card);
+    cursor: pointer;
+    transition:
+      border-color 0.15s ease,
+      background 0.15s ease,
+      box-shadow 0.15s ease;
+
+    &.selected {
+      border-color: var(--resenha-lime-edge);
+    }
+
+    // Solved topics carry a success-tinted edge and wash so resolutions stand
+    // out in the list. Declared before --featured so pinned topics keep the
+    // lime treatment when both apply.
+    &.status-solved {
+      // stylelint-disable-next-line discourse/require-design-tokens
+      border-color: rgb(from var(--resenha-success) r g b / 35%);
+      background:
+        linear-gradient(
+          120deg,
+          // stylelint-disable-next-line discourse/require-design-tokens
+          rgb(from var(--resenha-success) r g b / 7%),
+          transparent 48%
+        ),
+        var(--resenha-card);
+    }
+
+    // Pinned / featured topics get the lime edge + gradient treatment.
+    &.--featured {
+      border-color: var(--resenha-lime-edge);
+      background:
+        linear-gradient(120deg, var(--resenha-lime-soft), transparent 48%),
+        var(--resenha-raised);
+    }
+  }
+
+  .resenha-topic-card {
+    display: grid;
+    box-sizing: border-box;
+    min-width: 0;
+    max-width: 100%;
+    width: 100%;
+
+    // Fixed chip column aligns titles; long category names ellipsize.
+    grid-template-columns: 6.5rem minmax(0, 1fr) max-content;
+    grid-template-areas:
+      "chip title status"
+      "chip excerpt excerpt"
+      "chip meta meta";
+    gap: var(--space-2) var(--space-4);
+    padding: var(--space-4);
+
+    @include viewport.until(sm) {
+      grid-template-columns: minmax(0, 1fr) max-content;
+      grid-template-areas:
+        "chip status"
+        "title title"
+        "excerpt excerpt"
+        "meta meta";
+      padding: var(--space-3);
+    }
+
+    &__bulk-select {
+      position: absolute;
+      inset-block-start: var(--space-2);
+      inset-inline-end: var(--space-2);
+    }
+
+    &__chip {
+      grid-area: chip;
+      align-self: start;
+      min-width: 0;
+      max-width: 100%;
+
+      .badge-category__wrapper {
+        max-width: 100%;
+        box-sizing: border-box;
+      }
+
+      .badge-category__name {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      // Text-only category chips omit icons, lock markers, and emoji.
+      .badge-category .d-icon,
+      .badge-category img.emoji {
+        display: none;
+      }
+    }
+
+    &__title {
+      grid-area: title;
+      align-self: center;
+      min-width: 0;
+
+      .title {
+        color: var(--resenha-ink);
+        font-size: var(--font-up-1);
+        font-weight: var(--token-font-weight-semibold);
+        overflow-wrap: anywhere;
+      }
+    }
+
+    &__status {
+      grid-area: status;
+      align-self: start;
+      justify-self: end;
+
+      // The solved marker reads as a proper badge, not a stray glyph.
+      .topic-status.--solved {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-1);
+        padding: 0.25rem 0.45rem;
+        border-radius: var(--resenha-radius-sm);
+
+        // stylelint-disable-next-line discourse/require-design-tokens
+        border: 1px solid rgb(from var(--resenha-success) r g b / 30%);
+        // stylelint-disable-next-line discourse/require-design-tokens
+        background: rgb(from var(--resenha-success) r g b / 10%);
+        color: var(--resenha-success);
+        font-size: var(--font-down-1);
+        font-weight: var(--token-font-weight-semibold);
+
+        .d-icon {
+          color: var(--resenha-success);
+          font-size: var(--font-0);
+        }
+      }
+    }
+
+    &__meta {
+      grid-area: meta;
+      display: flex;
+      align-items: center;
+      gap: var(--space-3);
+      color: var(--resenha-muted);
+      font-size: var(--font-down-1);
+    }
+
+    &__posters {
+      display: flex;
+      align-items: center;
+
+      .avatar {
+        width: 1.5rem;
+        height: 1.5rem;
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px var(--resenha-card);
+
+        &:not(:first-child) {
+          margin-inline-start: -0.5rem;
+        }
+      }
+    }
+
+    &__stat {
+      white-space: nowrap;
+    }
+
+    // One-line muted excerpt.
+    .topic-excerpt {
+      display: -webkit-box;
+      grid-area: excerpt;
+      overflow: hidden;
+      width: auto;
+      max-width: 100%;
+      margin: 0;
+      color: var(--resenha-muted);
+      font-size: var(--font-down-1);
+      overflow-wrap: anywhere;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
+    }
+
+    // Category chip: bright pill + dark ink derived from the category color.
+    .badge-category__wrapper {
+      --chip-bg: light-dark(
+        oklch(from var(--category-badge-color) 48% calc(c * 0.7) h),
+        oklch(from var(--category-badge-color) 78% calc(c * 0.85) h)
+      );
+      --chip-ink: light-dark(
+        oklch(from var(--category-badge-color) 98% calc(c * 0.1) h),
+        oklch(from var(--category-badge-color) 24% calc(c * 0.6) h)
+      );
+      display: inline-flex;
+      align-items: center;
+      padding: 0.15rem 0.6rem;
+      border-radius: 10rem;
+      background: var(--chip-bg);
+    }
+
+    .badge-category.--style-square::before {
+      display: none;
+    }
+
+    .badge-category .d-icon {
+      color: var(--chip-ink);
+    }
+
+    .badge-category__name {
+      color: var(--chip-ink);
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-down-2);
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+  }
+}
+
+html.discourse-no-touch .topic-list.--resenha-cards .topic-list-item:hover {
+  border-color: var(--resenha-line-strong);
+  box-shadow: var(--resenha-shadow);
+}
+
+html.discourse-no-touch
+  .topic-list.--resenha-cards
+  .topic-list-item.--featured:hover {
+  border-color: var(--resenha-lime);
+}
+
+// The keyboard "/" hint only makes sense with a physical keyboard.
+html.discourse-touch .resenha-discovery-header__search-hint {
+  display: none;
+}
+
+// -- Mobile discovery ---------------------------------------------------------
+@include viewport.until(md) {
+  .resenha-discovery-header {
+    margin-block: var(--space-2) var(--space-4);
+  }
+
+  // The nav pills are hidden, so the controls row collapses to nothing.
+  .navigation-container {
+    margin-block-end: 0;
+  }
+
+  // With New topic promoted to the FAB, its combo caret (drafts menu) and the
+  // mobile list-filter dropdown would linger as stray squares above the list;
+  // drafts stay reachable from the profile menu.
+  .list-controls .d-combo-button button:not(#create-topic),
+  .list-controls .list-control-toggle-link-trigger {
+    display: none;
+  }
+
+  // "New topic" becomes a floating action button anchored above the bottom tab
+  // bar. It hides while a composer / keyboard is open so it never overlaps the
+  // input.
+  #create-topic {
+    position: fixed;
+    inset-block-end: calc(var(--resenha-tabbar-height, 0px) + var(--space-3));
+    inset-inline-end: var(--space-3);
+    z-index: z("footer-nav") - 1;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: var(--token-radius-full);
+    box-shadow: 0 0.5rem 1.25rem
+      color-mix(in srgb, var(--resenha-lime) 30%, transparent);
+
+    .d-button-label {
+      display: none;
+    }
+
+    .d-icon {
+      margin: 0;
+      font-size: var(--font-up-2);
+    }
+  }
+
+  html.composer-open #create-topic,
+  html.keyboard-visible #create-topic {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .topic-list.--resenha-cards .topic-list-item,
+  .resenha-discovery-header__search {
+    transition: none;
+  }
+}

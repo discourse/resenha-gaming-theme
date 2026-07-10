@@ -1,0 +1,47 @@
+{
+  "name": "Resenha Gaming",
+  "authors": "Resenha",
+  "theme_version": "1.0.0",
+  "minimum_discourse_version": null,
+  "maximum_discourse_version": null,
+  "assets": {},
+  "modifiers": {
+    "serialize_topic_excerpts": true,
+    "svg_icons": [
+      "display",
+      "headphones",
+      "layer-group",
+      "magnifying-glass",
+      "microphone-lines",
+      "plus",
+      "video",
+      "wave-square"
+    ]
+  },
+  "theme_site_settings": {
+    "enable_welcome_banner": false,
+    "search_experience": "search_icon"
+  },
+  "color_schemes": {
+    "Resenha Night": {
+      "primary": "F2F5F4",
+      "secondary": "090D14",
+      "tertiary": "C8FF5A",
+      "tertiary-med-or-tertiary": "C8FF5A",
+      "selected": "1D2C2D",
+      "header_background": "0D1420",
+      "header_primary": "F2F5F4",
+      "hover": "172331"
+    },
+    "Resenha Day": {
+      "primary": "101821",
+      "secondary": "F4F3EC",
+      "tertiary": "416A1D",
+      "tertiary-med-or-tertiary": "416A1D",
+      "selected": "DCEFC6",
+      "header_background": "FBFAF5",
+      "header_primary": "101821",
+      "hover": "E6E8DE"
+    }
+  }
+}

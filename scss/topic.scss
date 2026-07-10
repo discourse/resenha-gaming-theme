@@ -1,0 +1,196 @@
+@use "lib/viewport";
+
+// Topics are reading surfaces. Keep the background continuous from the title
+// through the post stream instead of ending the core content panel beneath the
+// final post.
+#main-outlet:has(#topic) {
+  min-block-size: calc(100dvh - var(--header-offset, 0px));
+  padding-block-end: calc(var(--space-6) + var(--resenha-tabbar-height, 0px));
+  background: var(--resenha-panel);
+}
+
+#main-outlet:has(#topic) > .regular {
+  background: transparent;
+}
+
+#topic-title {
+  margin-block-end: var(--space-4);
+  padding-block: var(--space-4) var(--space-3);
+  border-block-end: 1px solid var(--resenha-line);
+
+  h1 {
+    font-family: var(--resenha-display-font);
+    font-size: clamp(var(--font-up-3), 4vw, var(--font-up-5));
+    font-stretch: condensed;
+    font-weight: var(--token-font-weight-bold);
+    letter-spacing: 0.02em;
+    line-height: 1.05;
+  }
+
+  h1 a {
+    color: var(--resenha-ink);
+  }
+}
+
+// Each post is a discreet reading unit. The card edge makes long topics easy
+// to scan without changing the topic stream's width or sticky timeline math.
+// Inner padding insets the avatar, text, and controls from the card edges.
+#topic .topic-post > article.boxed {
+  margin-block-end: var(--space-3);
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--resenha-line);
+  border-radius: var(--resenha-radius);
+  background: var(--resenha-card);
+}
+
+#topic .topic-post .topic-avatar,
+#topic .topic-post .topic-body {
+  border-block-start: 0;
+}
+
+#topic .topic-post .topic-avatar {
+  padding-block-start: var(--space-3);
+}
+
+#topic .topic-post .topic-body {
+  // Fill the card so the action row hugs the card's right padding edge; the
+  // reading measure stays capped on the text itself below.
+  width: auto;
+  max-width: none;
+  padding-block: var(--space-2) 0;
+
+  // Keep the reading column snug inside the card: no dead band between the
+  // post text and its actions row.
+  .cooked {
+    max-width: var(--topic-body-width, 690px);
+    padding-block: var(--space-2) 0;
+  }
+
+  // Core adds a 20px block margin around the actions row, which reads as a
+  // dead band inside the compact card. Sit the actions directly under the
+  // text with a modest gap, and let the card's own bottom padding close it.
+  .post-menu-area {
+    margin-block: var(--space-2) 0;
+    padding-block-end: 0;
+  }
+}
+
+// Line the footer controls (wrench / share / bookmark / flag / reply) up with
+// the avatars in the post cards above by matching the card's inner inset.
+#topic-footer-buttons {
+  padding-block: var(--space-3) var(--space-5);
+  padding-inline-start: var(--space-4);
+}
+
+// discourse-solved paints the accepted-answer accordion header with the full
+// success green, which reads as a loud band inside the dark card. Retint it to
+// the theme's quieter success wash via the plugin's own custom properties.
+.accepted-answers.d-post-accordion {
+  --d-post-accordion-header-color: var(--resenha-success);
+  --d-post-accordion-header-background: rgb(
+    from var(--resenha-success) r g b / 10%
+  );
+  --d-post-accordion-header-border-color: rgb(
+    from var(--resenha-success) r g b / 30%
+  );
+}
+
+// -- Compact mobile post cards ------------------------------------------------
+// Below sm the avatar floats beside a tight metadata row so short replies read
+// as compact chat-like cards rather than tall desktop posts.
+@include viewport.until(sm) {
+  #topic-title {
+    margin-block-end: var(--space-3);
+    padding-block: var(--space-3) var(--space-2);
+  }
+
+  #topic .topic-post > article.boxed {
+    padding: var(--space-3) var(--space-3) var(--space-1);
+  }
+
+  #topic .topic-post .topic-avatar {
+    float: inline-start;
+    height: auto;
+    margin: 0;
+    margin-inline-end: var(--space-2);
+    padding: 0;
+    line-height: 0;
+
+    .avatar {
+      width: 2.25rem;
+      height: 2.25rem;
+    }
+  }
+
+  #topic .topic-post .topic-meta-data {
+    align-items: center;
+    min-height: 2.25rem;
+    margin-inline-start: calc(2.25rem + var(--space-2));
+  }
+
+  #topic .topic-post .topic-body {
+    padding-block: 0;
+
+    .cooked {
+      padding-block: var(--space-2) 0;
+    }
+  }
+
+  // Compact, tappable action row.
+  #topic nav.post-controls {
+    --control-space: 0.5em;
+
+    .actions {
+      align-items: center;
+      gap: var(--space-1);
+      width: 100%;
+
+      .btn {
+        padding: var(--space-2);
+        border-radius: var(--resenha-radius-sm);
+      }
+    }
+
+    .post-action-menu__solved-accepted,
+    .accepted-text {
+      font-size: var(--font-down-1);
+    }
+
+    .post-action-menu__reply .d-icon {
+      color: var(--resenha-lime);
+    }
+  }
+}
+
+// Docked topic progress + Back button (below the timeline breakpoint): restyle
+// to the theme's raised control language instead of core's tertiary primary.
+@media screen and (width <= 924px) {
+  #topic-progress-wrapper #topic-progress {
+    border: 1px solid var(--resenha-line-strong);
+    border-radius: var(--resenha-radius-sm);
+    background: var(--resenha-raised);
+    color: var(--resenha-ink-soft);
+
+    .nums {
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-0);
+    }
+
+    .bg {
+      background: var(--resenha-lime-soft);
+    }
+  }
+
+  .progress-back-container .btn.progress-back {
+    border: 1px solid var(--resenha-line-strong);
+    background: var(--resenha-raised);
+    color: var(--resenha-ink-soft);
+  }
+}
+
+// Lift the docked progress/timeline clear of the mobile tab bar and an open
+// composer. The tab-bar value already carries the device safe-area inset; when
+// the bar is hidden the composer owns that inset instead.
+.container.posts .topic-navigation.with-topic-progress {
+  bottom: calc(var(--composer-height, 0px) + var(--resenha-tabbar-height, 0px));
+}

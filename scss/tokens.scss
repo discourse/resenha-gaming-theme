@@ -1,0 +1,54 @@
+// Global tokens and core-variable mapping. Color tokens live in
+// common/color_definitions.scss so they compile per color scheme.
+:root {
+  --resenha-display-font:
+    "Arial Narrow", "Avenir Next Condensed", "Roboto Condensed", system-ui,
+    sans-serif;
+  --resenha-body-font:
+    inter, ui-sans-serif, system-ui, -apple-system, blinkmacsystemfont,
+    "Segoe UI", sans-serif;
+  --resenha-mono-font: "SFMono-Regular", consolas, "Liberation Mono", monospace;
+  --resenha-radius-sm: 0.45rem;
+  --resenha-radius: 0.65rem;
+  --resenha-radius-lg: 1rem;
+  --d-border-radius: var(--resenha-radius);
+  --d-border-radius-large: var(--resenha-radius-lg);
+  --d-button-border-radius: var(--resenha-radius-sm);
+  --d-input-border-radius: var(--resenha-radius-sm);
+  --d-content-background: var(--resenha-panel);
+  --d-sidebar-background: var(--resenha-sidebar);
+  --d-sidebar-active-background: var(--resenha-lime-soft);
+  --d-sidebar-active-color: var(--resenha-ink);
+  --d-sidebar-active-icon-color: var(--resenha-lime);
+  --d-sidebar-row-hover-background: var(--resenha-hairline-fill);
+  --d-sidebar-header-color: var(--resenha-faint);
+  --d-button-primary-bg-color: var(--resenha-lime);
+  --d-button-primary-bg-color--hover: var(--tertiary-hover);
+  --d-button-primary-text-color: var(--resenha-lime-ink);
+  --d-button-primary-icon-color: var(--resenha-lime-ink);
+  --d-input-bg-color: var(--resenha-well);
+  --d-input-border: 1px solid var(--resenha-line);
+  --d-input-focused-color: var(--resenha-lime);
+}
+
+body {
+  background: var(--resenha-page);
+  color: var(--resenha-ink);
+  font-family: var(--resenha-body-font);
+}
+
+%resenha-display-text {
+  font-family: var(--resenha-display-font);
+  font-stretch: condensed;
+  font-weight: var(--token-font-weight-bold);
+  letter-spacing: 0.02em;
+}
+
+%resenha-mono-label {
+  color: var(--resenha-faint);
+  font-family: var(--resenha-mono-font);
+  font-size: var(--font-down-2);
+  font-weight: var(--token-font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}

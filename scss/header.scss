@@ -1,0 +1,290 @@
+@use "lib/viewport";
+
+// Dark, minimal control-room header. Both the top row (logo + panel) and the
+// workspace tab row share the --resenha-bar surface with hairline separators
+// and no blur/shadow theatrics.
+.d-header {
+  border-block-end: 1px solid var(--resenha-line);
+  background: var(--resenha-bar);
+  box-shadow: none;
+  backdrop-filter: none;
+
+  // Chat lives in the workspace tabs, not the header. The user blob (avatar +
+  // notifications) stays top-right, just without the boxy chip behind it.
+  .chat-header-icon {
+    display: none;
+  }
+
+  .header-dropdown-toggle.current-user .icon {
+    padding: 0;
+    border: 0;
+    border-radius: var(--token-radius-full);
+    background: transparent;
+
+    img.avatar {
+      border-radius: var(--token-radius-full);
+    }
+  }
+
+  // The sidebar stays docked on wide desktop, so its toggle is redundant there.
+  // Narrow desktop (dropdown sidebar) and mobile keep their menu affordance.
+  .header-sidebar-toggle .btn-sidebar-toggle:not(.narrow-desktop) {
+    display: none;
+  }
+
+  // Compact logo, anchored to the left as the core layout already does.
+  .title {
+    --d-logo-height: 1.75rem;
+  }
+}
+
+// On desktop the workspace tabs replace the header, so search is a topics-page
+// surface only — the discovery page carries the search box on every viewport,
+// so the header magnifier is redundant everywhere.
+.d-header {
+  .search-dropdown,
+  .floating-search-input-wrapper {
+    display: none;
+  }
+}
+
+// Single-row header (desktop only): the workspace tabs ARE the header. The core
+// logo row collapses, and the panel (user blob + notifications, or the
+// anonymous login/signup buttons) overlays the right edge of the tab row.
+@include viewport.from(md) {
+  .d-header:has(.resenha-workspace-tabs) {
+    position: relative;
+    height: auto;
+    border-block-end: 0;
+
+    > .wrap {
+      position: absolute;
+      inset-block-start: 0;
+      inset-inline-end: 0;
+      z-index: 2;
+      width: auto;
+      height: 3.25rem;
+      padding-block: 0;
+    }
+
+    .home-logo-wrapper-outlet {
+      display: none;
+    }
+
+    // When scrolled inside a topic, core swaps the topic title into the header
+    // contents — which would render on top of the tab row here. The tabs are
+    // the navigation; the title lives on the page.
+    .extra-info-wrapper {
+      display: none;
+    }
+  }
+}
+
+.resenha-workspace-tabs {
+  width: 100%;
+  border-block: 1px solid var(--resenha-line);
+  background: var(--resenha-bar);
+
+  // Align the tab row's inner container with the main content grid so the tabs
+  // sit above the content, not above the sidebar. The values mirror the core
+  // .wrap max-width plus the sidebar column offset.
+  &__modes {
+    display: flex;
+    align-items: stretch;
+    gap: var(--space-1);
+    box-sizing: border-box;
+    max-width: var(--d-max-width);
+    margin-inline: auto;
+    padding-inline: var(--d-wrap-padding-x);
+  }
+
+  &__tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 3.25rem;
+    padding-block: var(--space-2);
+    padding-inline: var(--space-3);
+    border: 0;
+    background: transparent;
+    font-family: var(--resenha-body-font);
+    font-size: var(--font-0);
+    font-weight: var(--token-font-weight-semibold);
+    white-space: nowrap;
+    cursor: pointer;
+
+    // The tabs are anchors, so pin every link state above the global link
+    // color: inactive tabs stay muted, the active tab goes lime.
+    &,
+    &:visited,
+    &:hover {
+      color: var(--resenha-muted);
+    }
+
+    // Underline sits flush with the bar's bottom edge.
+    &::after {
+      position: absolute;
+      inset: auto 0 0;
+      height: 0.12rem;
+      background: transparent;
+      content: "";
+    }
+
+    .d-icon {
+      color: inherit;
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--resenha-lime);
+      outline-offset: -0.25rem;
+    }
+
+    &.is-active {
+      &,
+      &:visited,
+      &:hover {
+        // stylelint-disable-next-line discourse/require-design-tokens
+        color: var(--resenha-lime);
+      }
+
+      &::after {
+        background: var(--resenha-lime);
+      }
+    }
+  }
+
+  // Lime unread-count pill on the Chat tab.
+  &__unread {
+    flex: 0 0 auto;
+    padding: 0.1rem 0.4rem;
+    border-radius: var(--token-radius-full);
+
+    // stylelint-disable-next-line discourse/require-design-tokens
+    color: var(--resenha-lime-ink);
+    background: var(--resenha-lime);
+    font-family: var(--resenha-mono-font);
+    font-size: var(--font-down-2);
+    font-weight: var(--token-font-weight-bold);
+    line-height: 1.3;
+  }
+}
+
+// Desktop-only: the tab row is a horizontal bar aligned to the content column,
+// so it needs the sidebar offset and horizontal overflow scrolling. On mobile
+// the tabs become a full-width fixed bottom bar and take none of this.
+@include viewport.from(md) {
+  .resenha-workspace-tabs__modes {
+    // Keep the last tabs from sliding under the overlaid user panel.
+    padding-inline-end: calc(var(--d-wrap-padding-x) + 8rem);
+    overflow-x: auto;
+  }
+
+  body.has-sidebar-page .resenha-workspace-tabs__modes {
+    max-width: calc(var(--d-sidebar-width) + var(--d-max-width));
+    padding-inline-start: calc(
+      var(--d-wrap-padding-x) + var(--d-sidebar-width) +
+        var(--d-main-content-gap)
+    );
+  }
+}
+
+@include viewport.between(md, lg) {
+  .resenha-workspace-tabs__tab {
+    min-height: 3rem;
+    padding-inline: var(--space-2);
+  }
+}
+
+// -- Mobile bottom tab bar ----------------------------------------------------
+// Below md the stock core header returns on top (hamburger + avatar; the logo
+// is redundant chrome next to the Forum tab), and the workspace tabs move to a
+// fixed bottom navigation bar. A CSS var carries the bar's height to every
+// consumer that must clear it.
+@include viewport.until(md) {
+  .d-header .home-logo-wrapper-outlet {
+    display: none;
+  }
+
+  body:has(.resenha-workspace-tabs) {
+    --resenha-tabbar-height: calc(3.5rem + env(safe-area-inset-bottom));
+  }
+
+  // With the PWA footer nav present the bar is lifted above it, so consumers
+  // must clear both bars through the one shared value.
+  html.footer-nav-visible body:has(.resenha-workspace-tabs) {
+    --resenha-tabbar-height: calc(
+      3.5rem + env(safe-area-inset-bottom) + var(--footer-nav-height, 49px)
+    );
+  }
+
+  // The bar hides while a composer / keyboard is up or inside a chat
+  // conversation, so its height must collapse for consumers too.
+  html.composer-open body,
+  html.keyboard-visible body,
+  html.has-full-page-chat body:has(.chat-channel, .chat-thread) {
+    --resenha-tabbar-height: 0px;
+  }
+
+  .resenha-workspace-tabs {
+    position: fixed;
+    inset-inline: 0;
+    inset-block-end: 0;
+    z-index: z("footer-nav");
+    border-block: 0;
+    border-block-start: 1px solid var(--resenha-line);
+    padding-block-end: env(safe-area-inset-bottom);
+    background: var(--resenha-bar);
+
+    &__modes {
+      max-width: none;
+      margin: 0;
+      padding-inline: 0;
+      gap: 0;
+    }
+
+    &__tab {
+      flex: 1 1 0;
+      flex-direction: column;
+      justify-content: center;
+      gap: 0.2rem;
+      min-height: 3.5rem;
+      padding-inline: var(--space-1);
+      font-size: var(--font-down-2);
+
+      // Active indicator flips to the TOP edge of the bar.
+      &::after {
+        inset: 0 0 auto;
+      }
+
+      .d-icon {
+        font-size: var(--font-up-1);
+      }
+    }
+
+    // Unread pill floats over the top-right corner of the icon.
+    &__unread {
+      position: absolute;
+      inset-block-start: 0.3rem;
+      inset-inline-start: calc(50% + 0.4rem);
+    }
+  }
+
+  html.composer-open .resenha-workspace-tabs,
+  html.keyboard-visible .resenha-workspace-tabs,
+  html.has-full-page-chat
+    body:has(.chat-channel, .chat-thread)
+    .resenha-workspace-tabs {
+    display: none;
+  }
+
+  // When the PWA footer nav is present, lift the bar above it.
+  html.footer-nav-visible .resenha-workspace-tabs {
+    inset-block-end: var(--footer-nav-height, 49px);
+  }
+}
+
+html.discourse-no-touch .resenha-workspace-tabs__tab:hover:not(.is-active) {
+  color: var(--resenha-ink);
+  background: var(--resenha-hairline-fill);
+}

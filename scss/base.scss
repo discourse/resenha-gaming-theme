@@ -1,0 +1,115 @@
+@use "lib/viewport";
+
+// Generic base styles. Global tokens are defined in tokens.scss and
+// color_definitions.scss.
+
+// Buttons -------------------------------------------------------------------
+.btn {
+  font-weight: var(--token-font-weight-semibold);
+
+  &:focus-visible {
+    outline: 2px solid var(--resenha-lime);
+    outline-offset: 2px;
+  }
+}
+
+.btn-primary {
+  box-shadow: 0 0.5rem 1rem
+    color-mix(in srgb, var(--resenha-lime) 22%, transparent);
+}
+
+html.discourse-no-touch .btn-primary:hover {
+  box-shadow: 0 0.65rem 1.25rem
+    color-mix(in srgb, var(--resenha-lime) 30%, transparent);
+  transform: translateY(-1px);
+}
+
+.btn-default,
+.btn-flat,
+.d-button.btn-transparent {
+  border-color: var(--resenha-line);
+}
+
+// Form controls -------------------------------------------------------------
+input,
+textarea,
+.select-kit .select-kit-header {
+  &:focus-visible {
+    outline: 2px solid var(--resenha-lime);
+    outline-offset: 2px;
+  }
+}
+
+// Modals & composer ---------------------------------------------------------
+.composer-popup,
+.d-modal__container {
+  border: 1px solid var(--resenha-line-strong);
+  box-shadow: var(--resenha-shadow);
+}
+
+.d-modal__container {
+  border-radius: var(--resenha-radius-lg);
+}
+
+// Chrome hidden in the community view. --------------------------------------
+.welcome-banner,
+.category-breadcrumb {
+  display: none;
+}
+
+// The content column is a raised panel (like chat's), with breathing room on
+// every side so cards never sit directly against the raw page background.
+// Full-page chat handles its own spacing via --chat-header-offset (its height
+// math needs to account for every vertical inset, so plain padding would
+// overflow there).
+body:not(.has-full-page-chat) #main-outlet {
+  box-sizing: border-box;
+  padding-block-start: var(--space-4);
+  padding-inline: var(--space-6);
+  background: var(--resenha-panel);
+
+  @include viewport.until(md) {
+    padding-inline: var(--space-3);
+  }
+}
+
+// On mobile the workspace tabs are a fixed bottom bar; give the content column
+// room to scroll clear of it. Voice-room pages size themselves against the bar
+// height directly (voice-room.scss), so they opt out here to avoid a double
+// inset. The var resolves to 0px on desktop, where no bar exists.
+body:not(.has-full-page-chat, :has(.resenha-room-page)) #main-outlet {
+  padding-block-end: var(--resenha-tabbar-height, 0);
+}
+
+// The minimised draft composer docks to the viewport bottom; float it above the
+// mobile tab bar so it never sits behind it.
+#reply-control.draft {
+  bottom: var(--resenha-tabbar-height, 0);
+}
+
+// User profile streams (replies / likes / drafts) speak the card language.
+.user-content-wrapper {
+  .user-stream-item {
+    margin-block-end: var(--space-3);
+    padding: var(--space-4);
+    border: 1px solid var(--resenha-line);
+    border-radius: var(--resenha-radius);
+    background: var(--resenha-card);
+
+    .title a {
+      color: var(--resenha-ink);
+      font-weight: var(--token-font-weight-semibold);
+    }
+
+    .excerpt {
+      color: var(--resenha-muted);
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .btn-primary {
+    transition: none;
+  }
+}

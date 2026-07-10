@@ -1,0 +1,18 @@
+en:
+  theme_metadata:
+    description: "A dark, voice-first community theme for Resenha, inspired by a calm gaming control room."
+  workspace:
+    label: "Community modes"
+    forum: "Forum"
+    chat: "Chat"
+    live_room: "Live room"
+    search: "Search"
+  discovery:
+    title: "Latest discussions"
+    search_placeholder: "Search topics"
+    reply_count:
+      one: "%{count} reply"
+      other: "%{count} replies"
+    view_count:
+      one: "%{count} view"
+      other: "%{count} views"

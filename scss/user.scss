@@ -1,0 +1,48 @@
+@use "lib/viewport";
+
+// Signed-in user pages are work surfaces in this theme rather than part of the
+// forum feed. Give each of them the same contained panel treatment while
+// leaving public profiles otherwise intact.
+.user-summary-page .user-content,
+.user-preferences-page .user-content,
+.user-activity-page .user-content,
+.user-notifications-page .user-content,
+.user-messages-page .user-content,
+.user-invites-page .user-content,
+.user-badges-page .user-content {
+  padding: var(--space-4);
+  border: 1px solid var(--resenha-line);
+  border-radius: var(--resenha-radius);
+  background: var(--resenha-panel);
+}
+
+// Core gives .user-main a content-colored lower gutter. Once its child is a
+// contained panel, that gutter reads as an accidental second background at the
+// end of the page. Let the workspace page surface continue instead.
+body.user-summary-page .user-main,
+body.user-preferences-page .user-main,
+body.user-activity-page .user-main,
+body.user-notifications-page .user-main,
+body.user-messages-page .user-main,
+body.user-invites-page .user-main,
+body.user-badges-page .user-main {
+  padding-block-end: 0;
+  background: transparent;
+}
+
+.user-summary-page .top-section:not(:last-child) {
+  padding-block-end: var(--space-4);
+  border-block-end: 1px solid var(--resenha-line);
+}
+
+@include viewport.until(sm) {
+  .user-summary-page .user-content,
+  .user-preferences-page .user-content,
+  .user-activity-page .user-content,
+  .user-notifications-page .user-content,
+  .user-messages-page .user-content,
+  .user-invites-page .user-content,
+  .user-badges-page .user-content {
+    padding: var(--space-3);
+  }
+}
