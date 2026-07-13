@@ -439,12 +439,19 @@ html.discourse-touch .resenha-discovery-header__search-hint {
     margin-block-end: 0;
   }
 
-  // With New topic promoted to the FAB, its combo caret (drafts menu) and the
-  // mobile list-filter dropdown would linger as stray squares above the list;
-  // drafts stay reachable from the profile menu.
+  // With New topic promoted to the FAB, its combo caret (drafts menu), the
+  // mobile list-filter dropdown, and the staff bulk-select toggle would linger
+  // as stray squares above the list; drafts stay reachable from the profile
+  // menu and bulk moderation is a desktop flow.
   .list-controls .d-combo-button button:not(#create-topic),
-  .list-controls .list-control-toggle-link-trigger {
+  .list-control-toggle-link-trigger,
+  .list-controls button.bulk-select {
     display: none;
+  }
+
+  // Let the last card scroll clear of the floating action button.
+  .container.list-container {
+    padding-block-end: 5rem;
   }
 
   // "New topic" becomes a floating action button anchored above the bottom tab
