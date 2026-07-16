@@ -20,7 +20,11 @@ Based on the design at <https://resenha.falco.dev/>.
 
 ### Mobile
 
-<img src="screenshots/mobile.png" width="390" alt="Mobile home with the bottom tab bar and floating new-topic button">
+The workspace modes live in the bottom tab bar; each tab keeps its own surface.
+
+| Forum | Chat | Live room |
+| --- | --- | --- |
+| <img src="screenshots/mobile.png" alt="Mobile home with the bottom tab bar and floating new-topic button"> | <img src="screenshots/mobile-chat.png" alt="Mobile chat channels with chat's own navigation stacked above the workspace bar"> | <img src="screenshots/mobile-voice.png" alt="Mobile voice room with the join call-to-action"> |
 
 ## Features
 
