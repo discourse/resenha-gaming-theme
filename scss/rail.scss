@@ -1,0 +1,147 @@
+@use "lib/viewport";
+
+// Docks core's horizontal sticky header to the inline-start edge as a slim
+// full-height nav rail — theme-side only, core stays untouched.
+//
+// How the offsets stay correct: `.d-header-wrap` remains sticky and collapses
+// to zero height once `.d-header` goes fixed, so core's recalculation always
+// computes a header offset of 0 and skips writing the inline
+// `--header-offset` / `--main-outlet-offset` custom properties (it treats an
+// unset property as 0). JS consumers read the inline value with a `|| 0`
+// fallback — already rail-correct — and the html-level 0px defaults below
+// cover every stylesheet consumer. Small viewports keep the classic top bar,
+// where core measures and writes the real offsets inline, overriding these.
+html {
+  --d-nav-rail-width: 0px;
+}
+
+@include viewport.from(sm) {
+  html {
+    --d-nav-rail-width: 52px;
+    --header-offset: 0px;
+    --main-outlet-offset: 0px;
+  }
+
+  .discourse-root {
+    box-sizing: border-box;
+    padding-inline-start: var(--d-nav-rail-width);
+  }
+
+  .d-header {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: var(--d-nav-rail-width);
+    height: 100dvh;
+
+    > .wrap {
+      max-width: none;
+      height: 100%;
+      padding: var(--d-header-padding-x) 0;
+
+      .contents {
+        flex-direction: column;
+        height: 100%;
+      }
+    }
+
+    // the logo leads the rail; the (narrow-desktop) sidebar toggle renders
+    // before it in core's markup
+    .home-logo-wrapper-outlet {
+      order: -1;
+    }
+
+    .title {
+      height: auto;
+    }
+
+    // the rail has no room for topic info or an inline search field
+    .extra-info-wrapper,
+    .floating-search-input-wrapper {
+      display: none;
+    }
+
+    .header-sidebar-toggle button {
+      margin-right: 0;
+    }
+
+    .panel {
+      flex: 1 1 auto;
+      min-height: 0;
+      flex-direction: column;
+      margin-left: 0;
+      width: 100%;
+    }
+
+    .header-buttons {
+      flex-direction: column;
+
+      // no room for text buttons; login keeps its icon
+      .sign-up-button {
+        display: none;
+      }
+
+      // visually hidden instead of display: none so the button keeps its
+      // accessible name
+      .login-button .d-button-label {
+        position: absolute;
+        overflow: hidden;
+        clip-path: inset(50%);
+        width: 1px;
+        height: 1px;
+        white-space: nowrap;
+      }
+    }
+
+    .d-header-icons {
+      flex-direction: column;
+      align-items: center;
+      flex: 1 1 auto;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+
+      .current-user {
+        margin-block-start: auto;
+      }
+    }
+
+    // dropdowns open beside the rail instead of underneath a top bar
+    .menu-panel.drop-down {
+      top: 0;
+      right: auto;
+      inset-inline-start: calc(100% + 0.5em);
+      max-height: calc(100dvh - 2em);
+    }
+
+    #additional-panel-wrapper {
+      top: 0;
+      right: auto;
+      inset-inline-start: calc(100% + 0.5em);
+    }
+  }
+
+  // slide-in panels (narrow desktop) open beside the rail, not under it
+  .hamburger-panel .menu-panel.slide-in {
+    inset-inline-start: var(--d-nav-rail-width);
+  }
+
+  .header-cloak {
+    inset-inline-start: var(--d-nav-rail-width);
+    width: calc(100% - var(--d-nav-rail-width));
+  }
+
+  // fixed elements anchored to the viewport's inline-start edge; width must
+  // become auto or the inline-end edge overflows past the viewport
+  #reply-control {
+    inset-inline: var(--d-nav-rail-width) 0;
+    width: auto;
+  }
+
+  // the iPad PWA docks the footer nav at the top with a higher z-index, so
+  // the rail starts below it (core writes the real header offset there)
+  html.footer-nav-ipad .d-header {
+    inset-block: var(--footer-nav-height) 0;
+    height: auto;
+  }
+}

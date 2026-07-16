@@ -35,11 +35,6 @@
   }
 }
 
-// Give the discovery header's search dropdown room to breathe.
-.resenha-discovery-header__search .search-menu-panel {
-  min-width: min(22rem, calc(100vw - var(--space-4) * 2));
-}
-
 // Full /search page. --------------------------------------------------------
 .search-page {
   #main-outlet {

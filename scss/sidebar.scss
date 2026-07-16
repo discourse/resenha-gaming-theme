@@ -12,6 +12,30 @@
   border-inline-end: 1px solid var(--resenha-line);
 }
 
+// -- Forum search row ----------------------------------------------------------
+// Chat parity: forum mode leads with a Search row, like chat's "Search chat".
+.resenha-sidebar-search {
+  padding-block-end: var(--space-2);
+  margin-block-end: var(--space-2);
+  border-block-end: 1px solid var(--resenha-line);
+
+  &__hint {
+    margin-inline-start: auto;
+    padding: 0.05rem 0.4rem;
+    border: 1px solid var(--resenha-line-strong);
+    border-radius: var(--resenha-radius-sm);
+    color: var(--resenha-faint);
+    font-family: var(--resenha-mono-font);
+    font-size: var(--font-down-2);
+    line-height: 1.4;
+  }
+
+  // the keyboard hint only makes sense with a physical keyboard
+  html.discourse-touch &__hint {
+    display: none;
+  }
+}
+
 // -- Voice rooms section (plugin markup, CSS-only) ----------------------------
 // Targets both the main-panel section and its chat-panel mirror.
 .sidebar-section[data-section-name^="resenha-rooms"] {

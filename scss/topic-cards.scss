@@ -77,85 +77,6 @@
     letter-spacing: 0.02em;
     line-height: 1.05;
   }
-
-  &__search {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--space-2);
-    box-sizing: border-box;
-    width: min(20rem, 100%);
-    padding-inline: var(--space-3);
-    border: 1px solid var(--resenha-line);
-    border-radius: var(--resenha-radius);
-    background: var(--resenha-well);
-    transition: border-color 0.15s ease;
-
-    &:focus-within {
-      border-color: var(--resenha-lime-edge);
-    }
-
-    .search-menu-container {
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-
-    .search-input-wrapper,
-    .search-input {
-      min-width: 0;
-      padding: 0;
-      border: 0;
-      background: transparent;
-    }
-
-    .search-term__input {
-      min-height: 2.6rem;
-      padding: 0;
-      border: 0;
-      color: var(--resenha-ink);
-      background: transparent;
-      font-family: var(--resenha-body-font);
-      font-size: var(--font-0);
-
-      &::placeholder {
-        color: var(--resenha-faint);
-      }
-    }
-
-    // Keep the box minimal: the advanced-search shortcut is available on the
-    // full /search page.
-    .show-advanced-search {
-      display: none;
-    }
-
-    .clear-search {
-      color: var(--resenha-faint);
-
-      &:hover {
-        color: var(--resenha-ink);
-      }
-    }
-  }
-
-  &__search-icon {
-    flex: 0 0 auto;
-    color: var(--resenha-faint);
-  }
-
-  &__search-hint {
-    flex: 0 0 auto;
-    padding: 0.05rem 0.4rem;
-    border: 1px solid var(--resenha-line-strong);
-    border-radius: var(--resenha-radius-sm);
-    color: var(--resenha-faint);
-    font-family: var(--resenha-mono-font);
-    font-size: var(--font-down-2);
-    line-height: 1.4;
-  }
-
-  &__search:focus-within &__search-hint {
-    display: none;
-  }
 }
 
 // Hide the list filter nav; the category picker and search provide the
@@ -423,11 +344,6 @@ html.discourse-no-touch
   border-color: var(--resenha-lime);
 }
 
-// The keyboard "/" hint only makes sense with a physical keyboard.
-html.discourse-touch .resenha-discovery-header__search-hint {
-  display: none;
-}
-
 // -- Mobile discovery ---------------------------------------------------------
 @include viewport.until(md) {
   .resenha-discovery-header {
@@ -486,8 +402,7 @@ html.discourse-touch .resenha-discovery-header__search-hint {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .topic-list.--resenha-cards .topic-list-item,
-  .resenha-discovery-header__search {
+  .topic-list.--resenha-cards .topic-list-item {
     transition: none;
   }
 }

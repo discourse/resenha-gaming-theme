@@ -57,6 +57,17 @@ textarea,
   display: none;
 }
 
+// Control-room layout: the sidebar docks flush against the nav rail instead
+// of floating centered with the content, and the content panel fills the rest
+// of the viewport. Without this, big screens get a dead gap between the rail
+// and the centered grid.
+body.has-sidebar-page #main-outlet-wrapper {
+  max-width: none;
+  margin-inline: 0;
+  padding-inline: 0;
+  gap: 0;
+}
+
 // The content column is a raised panel (like chat's), with breathing room on
 // every side so cards never sit directly against the raw page background.
 // Full-page chat handles its own spacing via --chat-header-offset (its height
@@ -70,6 +81,19 @@ body:not(.has-full-page-chat) #main-outlet {
 
   @include viewport.until(md) {
     padding-inline: var(--space-3);
+  }
+}
+
+// The readable column centers inside the full-width panel so ultra-wide
+// screens don't stretch cards edge to edge. Symmetric padding (not per-child
+// max-width) because the outlet is a flex column on discovery routes, where
+// centered auto-margins would shrink each child to its own content width and
+// misalign the header, nav row, and cards. Full-page chat and voice rooms
+// manage their own layout. Must stay after the panel rule above — the
+// selectors tie on specificity.
+@include viewport.from(md) {
+  body:not(.has-full-page-chat, :has(.resenha-room-page)) #main-outlet {
+    padding-inline: max(var(--space-6), calc((100% - 80rem) / 2));
   }
 }
 

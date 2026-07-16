@@ -1,0 +1,30 @@
+rail_nav_items:
+  type: objects
+  default:
+    - name: Topics
+      icon: layer-group
+      url: /latest
+    - name: Chat
+      icon: comments
+      url: /chat
+    - name: Voice
+      icon: headphones
+      url: ""
+    - name: AI bot
+      icon: robot
+      url: /discourse-ai/ai-bot/conversations
+  schema:
+    name: rail_nav_item
+    properties:
+      name:
+        type: string
+        required: true
+      icon:
+        type: string
+        required: true
+      url:
+        type: string
+
+rail_nav_extra_icons:
+  type: list
+  default: "layer-group|comments|headphones|robot"

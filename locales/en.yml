@@ -1,6 +1,11 @@
 en:
   theme_metadata:
     description: "A dark, voice-first community theme for Resenha, inspired by a calm gaming control room."
+    settings:
+      rail_nav_items: "Navigation items shown in the nav rail under the logo, in order. Leave the URL blank to link to the most active voice room."
+      rail_nav_extra_icons: "Icon names used by the rail navigation items. Any icon referenced in the items must be listed here so it is included in the icon sprite."
+  rail_nav:
+    unread: "%{name} — %{count} unread"
   workspace:
     label: "Community modes"
     forum: "Forum"
