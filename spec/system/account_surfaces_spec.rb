@@ -17,9 +17,9 @@ RSpec.describe "Resenha account surfaces" do
 
   it "lets an administrator reach the dashboard and manage their account" do
     visit("/latest")
-    expect(account_surfaces).to have_admin_workspace_tab
+    expect(account_surfaces).to have_admin_rail_item
 
-    account_surfaces.open_admin_dashboard_from_workspace
+    account_surfaces.open_admin_dashboard_from_rail
     expect(page).to have_current_path("/admin")
 
     account_surfaces.visit_summary(admin)

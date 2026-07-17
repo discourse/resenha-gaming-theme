@@ -1,16 +1,17 @@
 @use "lib/viewport";
 
-// Dark, minimal control-room header. Both the top row (logo + panel) and the
-// workspace tab row share the --resenha-bar surface with hairline separators
-// and no blur/shadow theatrics.
+// Dark, minimal control-room header. From `sm` up, core renders the header as
+// a slim left nav rail; the theme rides that rail and puts the workspace
+// modes (rail_nav_items setting) under the logo. Below `sm` the stock top bar
+// returns and the workspace modes move to the bottom tab bar.
 .d-header {
   border-block-end: 1px solid var(--resenha-line);
   background: var(--resenha-bar);
   box-shadow: none;
   backdrop-filter: none;
 
-  // Chat lives in the workspace tabs, not the header. The user blob (avatar +
-  // notifications) stays top-right, just without the boxy chip behind it.
+  // Chat is a rail nav item, so the chat plugin's own header icon is
+  // redundant chrome.
   .chat-header-icon {
     display: none;
   }
@@ -32,189 +33,128 @@
     display: none;
   }
 
-  // Compact logo, anchored to the left as the core layout already does.
+  // Compact logo.
   .title {
     --d-logo-height: 1.75rem;
   }
-}
 
-// On desktop the workspace tabs replace the header, so search is a topics-page
-// surface only — the discovery page carries the search box on every viewport,
-// so the header magnifier is redundant everywhere.
-.d-header {
-  .search-dropdown,
   .floating-search-input-wrapper {
     display: none;
   }
+
+  // From `sm` up, search lives in the sidebar row, so the rail magnifier is
+  // redundant chrome; the mobile top bar keeps it.
+  @include viewport.from(sm) {
+    .search-dropdown {
+      display: none;
+    }
+  }
 }
 
-// Single-row header (desktop only): the workspace tabs ARE the header. The core
-// logo row collapses, and the panel (user blob + notifications, or the
-// anonymous login/signup buttons) overlays the right edge of the tab row.
-@include viewport.from(md) {
-  .d-header:has(.resenha-workspace-tabs) {
-    position: relative;
-    height: auto;
+// On the rail the separating hairline moves from the bottom edge to the
+// inline-end edge, and the column gets a calmer vertical rhythm: breathing
+// room at both ends, a clear step between the logo and the nav cluster, and
+// even gaps between the icons.
+@include viewport.from(sm) {
+  .d-header {
     border-block-end: 0;
+    border-inline-end: 1px solid var(--resenha-line);
 
     > .wrap {
-      position: absolute;
-      inset-block-start: 0;
-      inset-inline-end: 0;
-      z-index: 2;
-      width: auto;
-      height: 3.25rem;
-      padding-block: 0;
+      padding-block: var(--space-3);
+
+      .contents {
+        gap: var(--space-3);
+      }
     }
 
-    .home-logo-wrapper-outlet {
-      display: none;
+    .panel {
+      gap: var(--space-2);
     }
 
-    // When scrolled inside a topic, core swaps the topic title into the header
-    // contents — which would render on top of the tab row here. The tabs are
-    // the navigation; the title lives on the page.
-    .extra-info-wrapper {
-      display: none;
+    .d-header-icons {
+      gap: var(--space-2);
+    }
+
+    // icon-only login: a square control centered in the rail
+    .auth-buttons .login-button {
+      padding: var(--space-2);
     }
   }
 }
 
-.resenha-workspace-tabs {
-  width: 100%;
-  border-block: 1px solid var(--resenha-line);
-  background: var(--resenha-bar);
+// -- Rail nav (desktop workspace modes) ---------------------------------------
+// Items ride the core `.d-header-icons .icon` box; the theme adds the active
+// lime treatment, the rail-edge accent, and the unread dot.
+.resenha-rail-nav__link {
+  border-radius: var(--resenha-radius-sm);
 
-  // Align the tab row's inner container with the main content grid so the tabs
-  // sit above the content, not above the sidebar. The values mirror the core
-  // .wrap max-width plus the sidebar column offset.
-  &__modes {
-    display: flex;
-    align-items: stretch;
-    gap: var(--space-1);
-    box-sizing: border-box;
-    max-width: var(--d-max-width);
-    margin-inline: auto;
-    padding-inline: var(--d-wrap-padding-x);
+  .d-icon {
+    color: var(--d-header-icon-color);
   }
 
-  &__tab {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: var(--space-2);
-    min-height: 3.25rem;
-    padding-block: var(--space-2);
-    padding-inline: var(--space-3);
-    border: 0;
-    background: transparent;
-    font-family: var(--resenha-body-font);
-    font-size: var(--font-0);
-    font-weight: var(--token-font-weight-semibold);
-    white-space: nowrap;
-    cursor: pointer;
+  html.discourse-no-touch &:hover .d-icon,
+  &:focus-visible .d-icon {
+    color: var(--d-header-icon-color--hover);
+  }
 
-    // The tabs are anchors, so pin every link state above the global link
-    // color: inactive tabs stay muted, the active tab goes lime.
-    &,
-    &:visited,
-    &:hover {
-      color: var(--resenha-muted);
-    }
-
-    // Underline sits flush with the bar's bottom edge.
-    &::after {
-      position: absolute;
-      inset: auto 0 0;
-      height: 0.12rem;
-      background: transparent;
-      content: "";
-    }
+  &.is-active {
+    background: var(--resenha-lime-soft);
 
     .d-icon {
-      color: inherit;
+      // stylelint-disable-next-line discourse/require-design-tokens
+      color: var(--resenha-lime);
     }
 
-    &:focus-visible {
-      outline: 2px solid var(--resenha-lime);
-      outline-offset: -0.25rem;
+    // Accent bar hugging the rail's inline-start edge; 2.714em is the core
+    // header icon box (2.2857em + 2 * 0.2143em padding).
+    &::before {
+      position: absolute;
+      inset-block: 20%;
+      inset-inline-start: calc((var(--d-nav-rail-width, 52px) - 2.714em) / -2);
+      width: 2px;
+      border-radius: var(--token-radius-full);
+
+      // stylelint-disable-next-line discourse/require-design-tokens
+      background: var(--resenha-lime);
+      content: "";
     }
-
-    &.is-active {
-      &,
-      &:visited,
-      &:hover {
-        // stylelint-disable-next-line discourse/require-design-tokens
-        color: var(--resenha-lime);
-      }
-
-      &::after {
-        background: var(--resenha-lime);
-      }
-    }
-  }
-
-  // Lime unread-count pill on the Chat tab.
-  &__unread {
-    flex: 0 0 auto;
-    padding: 0.1rem 0.4rem;
-    border-radius: var(--token-radius-full);
-
-    // stylelint-disable-next-line discourse/require-design-tokens
-    color: var(--resenha-lime-ink);
-    background: var(--resenha-lime);
-    font-family: var(--resenha-mono-font);
-    font-size: var(--font-down-2);
-    font-weight: var(--token-font-weight-bold);
-    line-height: 1.3;
   }
 }
 
-// Desktop-only: the tab row is a horizontal bar aligned to the content column,
-// so it needs the sidebar offset and horizontal overflow scrolling. On mobile
-// the tabs become a full-width fixed bottom bar and take none of this.
-@include viewport.from(md) {
-  .resenha-workspace-tabs__modes {
-    // Keep the last tabs from sliding under the overlaid user panel.
-    padding-inline-end: calc(var(--d-wrap-padding-x) + 8rem);
-    overflow-x: auto;
-  }
-
-  body.has-sidebar-page .resenha-workspace-tabs__modes {
-    max-width: calc(var(--d-sidebar-width) + var(--d-max-width));
-    padding-inline-start: calc(
-      var(--d-wrap-padding-x) + var(--d-sidebar-width) +
-        var(--d-main-content-gap)
-    );
-  }
+// Unread dot over the top-end corner of the icon; the count itself is carried
+// by the link's accessible name.
+.resenha-rail-nav__unread {
+  position: absolute;
+  inset-block-start: 0.3em;
+  inset-inline-end: 0.3em;
+  width: 0.5em;
+  height: 0.5em;
+  border: 2px solid var(--resenha-bar);
+  border-radius: var(--token-radius-full);
+  background: var(--resenha-success);
 }
 
-@include viewport.between(md, lg) {
-  .resenha-workspace-tabs__tab {
-    min-height: 3rem;
-    padding-inline: var(--space-2);
-  }
-}
-
-// -- Mobile bottom tab bar ----------------------------------------------------
-// Below md the stock core header returns on top (hamburger + avatar; the logo
-// is redundant chrome next to the Forum tab), and the workspace tabs move to a
-// fixed bottom navigation bar. A CSS var carries the bar's height to every
-// consumer that must clear it.
-@include viewport.until(md) {
+// -- Workspace tabs (bottom bar, below `sm` only) ------------------------------
+// From `sm` up the rail nav replaces the tabs entirely (the component does not
+// render there), so every rule lives in the narrow-viewport block.
+@include viewport.until(sm) {
   .d-header .home-logo-wrapper-outlet {
+    // redundant chrome next to the Forum tab
     display: none;
   }
 
+  // 1px covers the bar's top hairline so consumers clear the full box
   body:has(.resenha-workspace-tabs) {
-    --resenha-tabbar-height: calc(3.5rem + env(safe-area-inset-bottom));
+    --resenha-tabbar-height: calc(3.5rem + 1px + env(safe-area-inset-bottom));
   }
 
   // With the PWA footer nav present the bar is lifted above it, so consumers
   // must clear both bars through the one shared value.
   html.footer-nav-visible body:has(.resenha-workspace-tabs) {
     --resenha-tabbar-height: calc(
-      3.5rem + env(safe-area-inset-bottom) + var(--footer-nav-height, 49px)
+      3.5rem + 1px + env(safe-area-inset-bottom) +
+        var(--footer-nav-height, 49px)
     );
   }
 
@@ -231,42 +171,95 @@
     inset-inline: 0;
     inset-block-end: 0;
     z-index: z("footer-nav");
-    border-block: 0;
     border-block-start: 1px solid var(--resenha-line);
     padding-block-end: env(safe-area-inset-bottom);
     background: var(--resenha-bar);
 
     &__modes {
-      max-width: none;
-      margin: 0;
-      padding-inline: 0;
-      gap: 0;
+      display: flex;
+      align-items: stretch;
     }
 
     &__tab {
+      position: relative;
+      display: inline-flex;
+      box-sizing: border-box;
       flex: 1 1 0;
       flex-direction: column;
+      align-items: center;
       justify-content: center;
       gap: 0.2rem;
-      min-height: 3.5rem;
-      padding-inline: var(--space-1);
-      font-size: var(--font-down-2);
 
-      // Active indicator flips to the TOP edge of the bar.
+      // the flex centering provides the spacing; extra block padding would
+      // grow the bar past --resenha-tabbar-height and overlap consumers
+      min-height: 3.5rem;
+      padding-block: 0;
+      padding-inline: var(--space-1);
+      border: 0;
+      background: transparent;
+      font-family: var(--resenha-body-font);
+      font-size: var(--font-down-2);
+      font-weight: var(--token-font-weight-semibold);
+      white-space: nowrap;
+      cursor: pointer;
+
+      // The tabs are anchors, so pin every link state above the global link
+      // color: inactive tabs stay muted, the active tab goes lime.
+      &,
+      &:visited,
+      &:hover {
+        color: var(--resenha-muted);
+      }
+
+      // Active indicator sits flush with the bar's TOP edge.
       &::after {
+        position: absolute;
         inset: 0 0 auto;
+        height: 0.12rem;
+        background: transparent;
+        content: "";
       }
 
       .d-icon {
+        color: inherit;
         font-size: var(--font-up-1);
+      }
+
+      &:focus-visible {
+        outline: 2px solid var(--resenha-lime);
+        outline-offset: -0.25rem;
+      }
+
+      &.is-active {
+        &,
+        &:visited,
+        &:hover {
+          // stylelint-disable-next-line discourse/require-design-tokens
+          color: var(--resenha-lime);
+        }
+
+        &::after {
+          background: var(--resenha-lime);
+        }
       }
     }
 
-    // Unread pill floats over the top-right corner of the icon.
+    // Lime unread-count pill floating over the top-right corner of the icon.
     &__unread {
       position: absolute;
       inset-block-start: 0.3rem;
       inset-inline-start: calc(50% + 0.4rem);
+      flex: 0 0 auto;
+      padding: 0.1rem 0.4rem;
+      border-radius: var(--token-radius-full);
+
+      // stylelint-disable-next-line discourse/require-design-tokens
+      color: var(--resenha-lime-ink);
+      background: var(--resenha-lime);
+      font-family: var(--resenha-mono-font);
+      font-size: var(--font-down-2);
+      font-weight: var(--token-font-weight-bold);
+      line-height: 1.3;
     }
   }
 
@@ -282,9 +275,9 @@
   html.footer-nav-visible .resenha-workspace-tabs {
     inset-block-end: var(--footer-nav-height, 49px);
   }
-}
 
-html.discourse-no-touch .resenha-workspace-tabs__tab:hover:not(.is-active) {
-  color: var(--resenha-ink);
-  background: var(--resenha-hairline-fill);
+  html.discourse-no-touch .resenha-workspace-tabs__tab:hover:not(.is-active) {
+    color: var(--resenha-ink);
+    background: var(--resenha-hairline-fill);
+  }
 }

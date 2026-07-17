@@ -3,16 +3,16 @@
 module PageObjects
   module Components
     class WorkspaceChrome < PageObjects::Pages::Base
-      def has_no_workspace_tabs?
-        has_no_css?(".resenha-workspace-tabs")
+      def has_no_workspace_nav_items?
+        has_no_css?(".resenha-rail-nav__item")
       end
 
-      def has_active_admin_workspace_tab?
-        has_css?(".resenha-workspace-tabs__tab.--admin.is-active[aria-current='page']")
+      def has_active_admin_rail_item?
+        has_css?(".resenha-rail-nav__item a.is-active[aria-current='page'][href^='/admin']")
       end
 
-      def has_no_default_header_logo?
-        has_no_css?(".d-header .home-logo-wrapper-outlet", visible: true)
+      def has_rail_logo?
+        has_css?(".d-header .home-logo-wrapper-outlet", visible: true)
       end
 
       def has_aligned_chat_panes?

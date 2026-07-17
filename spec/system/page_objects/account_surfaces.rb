@@ -72,12 +72,12 @@ module PageObjects
         )
       end
 
-      def has_admin_workspace_tab?
-        has_css?(".resenha-workspace-tabs__tab.--admin")
+      def has_admin_rail_item?
+        has_css?(".resenha-rail-nav__item a[href^='/admin']")
       end
 
-      def open_admin_dashboard_from_workspace
-        find(".resenha-workspace-tabs__tab.--admin").click
+      def open_admin_dashboard_from_rail
+        find(".resenha-rail-nav__item a[href^='/admin']").click
       end
     end
   end

@@ -28,16 +28,16 @@ RSpec.describe "Resenha workspace chrome" do
     screenshot_marker(label: "resenha-chat-thread")
   end
 
-  it "keeps the workspace header on administration and hides it in preferences" do
+  it "keeps the nav rail on administration and hides its items in preferences" do
     sign_in(admin)
 
     admin_dashboard.visit
-    expect(workspace_chrome).to have_active_admin_workspace_tab
-    expect(workspace_chrome).to have_no_default_header_logo
+    expect(workspace_chrome).to have_active_admin_rail_item
+    expect(workspace_chrome).to have_rail_logo
     screenshot_marker(label: "resenha-admin-dashboard")
 
     preferences_page.visit(admin)
-    expect(workspace_chrome).to have_no_workspace_tabs
+    expect(workspace_chrome).to have_no_workspace_nav_items
     screenshot_marker(label: "resenha-preferences")
   end
 end

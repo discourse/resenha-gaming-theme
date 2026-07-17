@@ -51,6 +51,9 @@ export default class ResenhaWorkspaceTabs extends Component {
 
   get shouldRender() {
     return (
+      // from `sm` up the nav rail carries the workspace modes; the tab bar
+      // only exists below that as the bottom navigation
+      !this.capabilities.viewport.sm &&
       this.siteSettings.resenha_enabled &&
       !HIDDEN_ROUTES.some((route) =>
         this.router.currentRouteName.startsWith(route)
