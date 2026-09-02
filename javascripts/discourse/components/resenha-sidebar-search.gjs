@@ -33,7 +33,7 @@ export default class ResenhaSidebarSearch extends Component {
     // chat, voice rooms, and AI conversations bring their own sidebar panels
     return (
       !routeName.startsWith("chat") &&
-      !routeName.startsWith("resenha-room") &&
+      !routeName.startsWith("voice-room") &&
       !routeName.startsWith("discourse-ai")
     );
   }

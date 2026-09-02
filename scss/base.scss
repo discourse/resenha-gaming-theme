@@ -92,7 +92,7 @@ body:not(.has-full-page-chat) #main-outlet {
 // manage their own layout. Must stay after the panel rule above — the
 // selectors tie on specificity.
 @include viewport.from(md) {
-  body:not(.has-full-page-chat, :has(.resenha-room-page)) #main-outlet {
+  body:not(.has-full-page-chat, :has(.voice-room-page)) #main-outlet {
     padding-inline: max(var(--space-6), calc((100% - 80rem) / 2));
   }
 }
@@ -101,7 +101,7 @@ body:not(.has-full-page-chat) #main-outlet {
 // room to scroll clear of it. Voice-room pages size themselves against the bar
 // height directly (voice-room.scss), so they opt out here to avoid a double
 // inset. The var resolves to 0px on desktop, where no bar exists.
-body:not(.has-full-page-chat, :has(.resenha-room-page)) #main-outlet {
+body:not(.has-full-page-chat, :has(.voice-room-page)) #main-outlet {
   padding-block-end: var(--resenha-tabbar-height, 0);
 }
 

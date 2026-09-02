@@ -1,8 +1,8 @@
 @use "lib/viewport";
 
-// Voice room styles target the Resenha plugin's stable classes. Colors come
+// Voice room styles target the core voice plugin's stable classes. Colors come
 // only from the theme tokens so both schemes stay usable.
-.resenha-room-page {
+.voice-room-page {
   gap: var(--space-3);
 
   &__header {
@@ -154,7 +154,7 @@
 }
 
 // Person / video tiles.
-.resenha-video-tile {
+.voice-video-tile {
   border-radius: 0.6rem;
   background: var(--resenha-tile);
 
@@ -207,7 +207,7 @@
     border: 1px solid color-mix(in srgb, var(--resenha-cyan) 25%, transparent);
     background: var(--resenha-screen);
 
-    .resenha-video-tile__info {
+    .voice-video-tile__info {
       justify-content: flex-start;
       gap: 0.4rem;
       background: rgb(0 0 0 / 20%);
@@ -216,20 +216,20 @@
       letter-spacing: 0.04em;
     }
 
-    .resenha-video-tile__name {
+    .voice-video-tile__name {
       padding: 0;
       background: transparent;
       color: var(--resenha-ink-soft);
     }
 
-    .resenha-video-tile__info .d-icon {
+    .voice-video-tile__info .d-icon {
       color: var(--resenha-cyan);
     }
   }
 }
 
 // Room chat panel.
-.resenha-room-page__sidebar .resenha-chat {
+.voice-room-page__sidebar .voice-chat {
   // Fill the themed column instead of the plugin's fixed 22rem floor.
   min-width: 0;
   border: 1px solid var(--resenha-line);
@@ -237,7 +237,7 @@
   background: var(--resenha-surface);
 }
 
-.resenha-chat {
+.voice-chat {
   &__header {
     border-bottom: 1px solid var(--resenha-line);
   }
@@ -278,11 +278,11 @@
 // Below lg the plugin turns the chat panel into a full-height drawer; keep that
 // behavior and just make sure the stage breathes when the chat is closed.
 @include viewport.until(lg) {
-  .resenha-room-page__stage {
+  .voice-room-page__stage {
     row-gap: var(--space-2);
   }
 
-  .resenha-room-page.--presentation .resenha-room-page__presentation-rail {
+  .voice-room-page.--presentation .voice-room-page__presentation-rail {
     grid-auto-columns: minmax(8rem, 11rem);
   }
 }
@@ -291,7 +291,7 @@
 // The room keeps the bottom tab bar, so its height and the docked call widget
 // both reserve room for it. Controls grow to comfortable touch targets.
 @include viewport.until(md) {
-  .resenha-room-page {
+  .voice-room-page {
     height: calc(
       100dvh - var(--header-offset, 4em) - var(--resenha-tabbar-height, 0px) -
         4em
@@ -324,7 +324,7 @@
   // The call widget is a full-width bottom dock on touch; float it above the
   // tab bar so the two never overlap. Scoped to <md so wider touch devices
   // (no bottom bar) keep the plugin's own safe-area inset.
-  html.discourse-touch .resenha-call-widget {
+  html.discourse-touch .voice-call-widget {
     inset-block-end: calc(var(--resenha-tabbar-height, 0px) + 0.75rem);
   }
 }

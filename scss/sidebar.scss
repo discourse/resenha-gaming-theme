@@ -38,7 +38,7 @@
 
 // -- Voice rooms section (plugin markup, CSS-only) ----------------------------
 // Targets both the main-panel section and its chat-panel mirror.
-.sidebar-section[data-section-name^="resenha-rooms"] {
+.sidebar-section[data-section-name^="voice-rooms"] {
   // Mono uppercase eyebrow header.
   .sidebar-section-header-text {
     font-family: var(--resenha-mono-font);
@@ -66,7 +66,7 @@
 
 // Room rows: an icon tile prefix + room name, a lime wash while connected, and
 // the plugin's own suffix markers (connecting spinner / video icon) restyled.
-.resenha-sidebar-link {
+.voice-sidebar-link {
   .sidebar-section-link-content-text {
     // Grow so the trailing suffix marker is pushed to the far edge.
     flex: 1 1 auto;
@@ -104,7 +104,7 @@
 }
 
 // Participant rows are indented (plugin) and rendered a notch smaller/quieter.
-.resenha-sidebar-participant {
+.voice-sidebar-participant {
   .sidebar-section-link-content-text {
     color: var(--resenha-muted);
     font-size: var(--font-down-1);
@@ -173,15 +173,15 @@ body:not(.has-full-page-chat) {
 }
 
 // Voice rooms only belong to the Live room tab (the room page is the marker).
-body:not(:has(.resenha-room-page)) {
-  .sidebar-section[data-section-name^="resenha-rooms"] {
+body:not(:has(.voice-room-page)) {
+  .sidebar-section[data-section-name^="voice-rooms"] {
     display: none;
   }
 }
 
 // Forum sections leave when Chat or the Live room take over the rail.
 .has-full-page-chat,
-body:has(.resenha-room-page) {
+body:has(.voice-room-page) {
   .sidebar-section[data-section-name="categories"],
   .sidebar-section[data-section-name="tags"] {
     display: none;
