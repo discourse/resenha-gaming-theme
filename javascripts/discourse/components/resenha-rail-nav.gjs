@@ -64,11 +64,11 @@ export default class ResenhaRailNav extends Component {
   }
 
   get liveRoomUrl() {
-    const rooms = getOwner(this)?.lookup("service:resenha-rooms")?.rooms ?? [];
+    const rooms = getOwner(this)?.lookup("service:voice-rooms")?.rooms ?? [];
     const room =
       rooms.find((r) => r.active_participants?.length > 0) ?? rooms[0];
 
-    return room ? `/resenha/r/${room.slug}` : null;
+    return room ? `/voice/r/${room.slug}` : null;
   }
 
   get mode() {
@@ -78,7 +78,7 @@ export default class ResenhaRailNav extends Component {
       return "chat";
     }
 
-    if (routeName.startsWith("resenha-room")) {
+    if (routeName.startsWith("voice-room")) {
       return "voice";
     }
 
@@ -98,7 +98,7 @@ export default class ResenhaRailNav extends Component {
       return "chat";
     }
 
-    if (url.startsWith("/resenha")) {
+    if (url.startsWith("/voice")) {
       return "voice";
     }
 

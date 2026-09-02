@@ -1,6 +1,6 @@
 # Resenha Gaming
 
-A dark-first Discourse theme for gaming communities running the [Resenha](https://resenha.falco.dev/) voice-rooms plugin. It turns the forum, chat, and live voice rooms into one workspace: a slim navigation rail on desktop, a context-aware sidebar, card-style topic lists, full-page chat, and a bottom tab bar on mobile.
+A dark-first Discourse theme for gaming communities running Discourse's [voice](https://github.com/discourse/discourse/tree/main/plugins/voice) rooms plugin. It turns the forum, chat, and live voice rooms into one workspace: a slim navigation rail on desktop, a context-aware sidebar, card-style topic lists, full-page chat, and a bottom tab bar on mobile.
 
 Based on the design at <https://resenha.falco.dev/>.
 
@@ -45,7 +45,7 @@ The workspace modes live in the bottom tab bar; each tab keeps its own surface.
 ## Requirements
 
 - A recent Discourse (this theme relies on modern core APIs: topic-list transformers, `light-dark()` color tokens, the `lib/viewport` breakpoint mixins, and `objects`-type theme settings).
-- The **Resenha** plugin, installed and enabled (`resenha_enabled: true`).
+- **Voice** enabled (`voice_enabled: true`) — the core `plugins/voice` rooms plugin, formerly the standalone `resenha` plugin.
 - **Chat** enabled (`chat_enabled: true`) for the Chat rail item, full-page chat, and room chat.
 - Optional: **discourse-ai** — the default AI bot rail item links to its conversations page; remove the item if the plugin isn't installed.
 - Optional: **discourse-solved** — solved topics get their badge and card treatment automatically when the plugin is present.

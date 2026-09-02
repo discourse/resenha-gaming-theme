@@ -11,7 +11,7 @@ RSpec.describe "Resenha account surfaces" do
   let(:account_surfaces) { PageObjects::Pages::AccountSurfaces.new }
 
   before do
-    SiteSetting.resenha_enabled = true
+    SiteSetting.voice_enabled = true
     sign_in(admin)
   end
 

@@ -16,7 +16,7 @@ RSpec.describe "Resenha workspace chrome" do
   let(:workspace_chrome) { PageObjects::Components::WorkspaceChrome.new }
 
   before do
-    SiteSetting.resenha_enabled = true
+    SiteSetting.voice_enabled = true
     chat_system_bootstrap(member, [channel])
     sign_in(member)
   end

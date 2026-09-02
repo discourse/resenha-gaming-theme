@@ -19,7 +19,6 @@ const MAX_UNREAD_COUNT = 99;
 export default class ResenhaWorkspaceTabs extends Component {
   @service capabilities;
   @service currentUser;
-  @service resenhaRooms;
   @service router;
   @service siteSettings;
 
@@ -54,7 +53,7 @@ export default class ResenhaWorkspaceTabs extends Component {
       // from `sm` up the nav rail carries the workspace modes; the tab bar
       // only exists below that as the bottom navigation
       !this.capabilities.viewport.sm &&
-      this.siteSettings.resenha_enabled &&
+      this.siteSettings.voice_enabled &&
       !HIDDEN_ROUTES.some((route) =>
         this.router.currentRouteName.startsWith(route)
       )
@@ -70,18 +69,20 @@ export default class ResenhaWorkspaceTabs extends Component {
       return "chat";
     }
 
-    if (this.router.currentRouteName.startsWith("resenha-room")) {
+    if (this.router.currentRouteName.startsWith("voice-room")) {
       return "live";
     }
 
     return "forum";
   }
 
+  // Looked up defensively so the theme keeps working when the voice plugin is
+  // absent or disabled and its service is never registered.
   get liveRoom() {
+    const rooms = getOwner(this)?.lookup("service:voice-rooms")?.rooms ?? [];
+
     return (
-      this.resenhaRooms.rooms.find(
-        (room) => room.active_participants?.length > 0
-      ) ?? this.resenhaRooms.rooms[0]
+      rooms.find((room) => room.active_participants?.length > 0) ?? rooms[0]
     );
   }
 
@@ -155,7 +156,7 @@ export default class ResenhaWorkspaceTabs extends Component {
           {{/if}}
           {{#if this.hasLiveRoom}}
             <LinkTo
-              @route="resenha-room"
+              @route="voice-room"
               @model={{this.liveRoom.slug}}
               @query={{this.liveRoomQuery}}
               class={{dConcatClass
